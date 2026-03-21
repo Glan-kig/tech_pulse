@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechPulse - Veille Etudiante</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="bg-light">
+    <div class="container py-5">
+        <h1 class="mb-4">Dernieres Nouvelles</h1>
+        <div class="row">
+            {% for article in articles %}
+            <div class="col-md-6 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <span class="badge bg-info text-dark">{{ article.category.name }}</span>
+                        <h2 class="card-title">{{ article.title }}</h2>
+                        <p class="card-text text-muted">{{ article.summary }}</p>
+                        <hr>
+                        <h6>Sources Verifier : </h6>
+                        <p>Nombre de sources pour cet article : {{ article.sources.count }}</p>
+                        <ul class="list-unstyled">
+                            {% for source in article.sources.all %}
+                                <li>{{ source.site_name }} : <a href="{{ source.url }}" rel="noopener noreferrer">{{ source.url }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="card-footer">
+                        <small class="text-muted">Publié le {{ article.created_at|date:"d/m/Y" }}</small>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+                <p>Aucune Nouvelle article pour le moment. Revenez plus tard !</p>
+            {% endfor %}
+        </div>
+    </div>
+    
+</body>
+</html>
