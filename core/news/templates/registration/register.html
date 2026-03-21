@@ -1,0 +1,78 @@
+{% extends 'news/base.html' %}
+
+{% block title %}Inscription - TechPulse{% endblock %}
+
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col-mb-6">
+            <div class="card shadow mt-5 border-0">
+                <div class="card-header bg-priary text-center py-3">
+                    <h3 class="mb-0">Rejoindre TechPulse</h3>
+                    <small>Rester à jour avec l'avancée technologique</small>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        {% if form.errors %}
+                            <div class="alert alert-danger">
+                                Oups Il y a des erreurs dans votre formulaire.
+                            </div>
+                        {% endif %}
+
+                        {% for field in form %}
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">{{ field.label }}</label>
+                            </div>
+                            <div class="form-control-container">
+                                {{ field }}
+                            </div>
+                            {% if field.help_text %}
+                                <div class="form-text small text-muted">
+                                    {{ field.help_text }}
+                                </div>
+                            {% endif %}
+                            {% for error in field.errors %}
+                                <div class="text-danger small">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+                        {% endfor %}
+
+                        <div class="d-grid grap-2 mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">Créer mon compte</button>
+                        </div>
+                    </form>
+                    <hr class="my-4">
+
+                    <div class="text-center">
+                        <p class="mb-0 text-muted">Vous avez déjà un compte ?</p>
+                        <a href="{% url 'login' %}" class="btn btn-outline-secondary btn-sm mt-2">
+                            Se connecter
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <style>
+        input {
+            display: block;
+            width: 100%;
+            padding: 0.375rem 0.75rem;
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.5;
+            color: #212529;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid #dee2e6;
+            border-radius: 0.375rem;
+            transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+        }
+        input:focus {
+            border-color: #86b7fe;
+            outline: 0;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, .25);
+        }
+    </style>
+{% endblock %}

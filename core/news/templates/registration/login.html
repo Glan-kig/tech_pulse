@@ -1,0 +1,43 @@
+{% extends 'news/base.html' %}
+
+{% block title %}Connexion - TechPulse{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-5">
+        <div class="card shadow mt-5">
+            <div class="card-body">
+                <h2 class="text-center mb-4">Connexion</h2>
+                <form method="post">
+                    {% csrf_token %}
+                    {% if form.errors %}
+                        <div class="alert alert-danger">
+                            Identifiants invalides. Veuillez réessayer.
+                        </div>
+                    {% endif %}
+
+                    <div class="mb-3">
+                        {{ form.username.label_tag }}
+                        <div class="form-control-plaintext border rounder px-2">
+                            {{ form.username }}
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        {{ form.password.label_tag }}
+                        <div class="form-control-plaintext border rounder px-2">
+                            {{ form.password }}
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 mt-3">Se connecter</button>
+                </form>
+                <hr>
+                <div class="text-center mt-3">
+                    <p>Pas encore de compte ? <a href="{% url 'register' %}">Inscrivez-vous ici</a>.</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,11 +1,14 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import login
 from django.db.models import Q
-from .models import Article, Category
+from .models import Article, Category, Favorite
 
 def home(request):
     query = request.GET.get('q') # Récupération de la requête de recherche depuis les paramètres de la requête
     category_id = request.GET.get('category') # Récupération de l'ID de la catégorie depuis les paramètres de la requête
-    
+
     # On recupère tous les articles, triés par date de création décroissante, et on précharge les sources associées pour éviter les requêtes supplémentaires
     articles = Article.objects.all().order_by('-created_at').prefetch_related('sources')
 
@@ -26,3 +29,30 @@ def home(request):
     }
 
     return render(request, 'news/home.html', content)
+
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user) # Connecte automatiquement l'utilisateur après l'inscription
+            return redirect('home') # Redirige vers la page d'accueil après l'inscription
+    else:
+        form = UserCreationForm()
+    return render(request, 'registration/register.html', {'form': form})
+
+@login_required
+def add_favorite(request, article_id):
+    article = Article.objects.get(id=article_id)
+
+    # Ajoute l'article aux favoris de l'utilisateur, en évitant les doublons grâce à get_or_create
+    Favorite.objects.get_or_create(user=request.user, article=article)
+
+    return redirect('home')
+
+@login_required
+def my_favorites(request):
+    # Récupère les articles favoris de l'utilisateur connecté, triés par date d'ajout décroissante
+    user_favorites = Favorite.objects.filter(user=request.user).order_by('-added_at').select_related('article')
+
+    return render(request, 'news/favorites.html', {'favorites': user_favorites})

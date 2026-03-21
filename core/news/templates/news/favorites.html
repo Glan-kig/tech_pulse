@@ -1,0 +1,26 @@
+{% extends 'news/base.html' %}
+
+{% block title %}Connexion - TechPulse{% endblock %}
+
+{% block content %}
+    <div class="container py-5">
+        <h1>Mes Articles Favoris</h1>
+        <div class="row">
+            {% for favorite in favorites %}
+            <div class="col-md-6 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ favorite.article.title }}</h5>
+                        <p class="text-muted small">Sauvegardé le {{ favorite.added_at|date:"d/m/Y" }}</p>
+                        {% for source in favorite.article.sources.all %}
+                            <p>{{ source.site_name }} : <a href="{{ source.url }}" rel="noopener noreferrer">{{ source.url }}</a></p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+                <p>Vous n'avez aucun article favori pour le moment. <a href="{% url 'home' %}">Parcourir les news</a>.</p>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
