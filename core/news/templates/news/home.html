@@ -31,7 +31,12 @@
                 <div class="card h-100 shadow-sm">
                     <div class="card-body">
                         <span class="badge bg-info text-dark">{{ article.category.name }}</span>
-                        <h2 class="card-title">{{ article.title }}</h2>
+                        <h2 class="card-title">
+                            {{ article.title }}
+                            {% if article.is_new %}
+                                <span class="badge bg-danger fs-6">Nouveau !</span>
+                            {% endif %}
+                        </h2>
                         <p class="card-text text-muted">{{ article.summary }}</p>
                         <hr>
                         <h6>Sources Verifier : </h6>

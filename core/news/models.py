@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
+from datetime import timedelta
 
 class Category(models.Model):
     name = models.CharField(max_length=255)
@@ -12,6 +14,10 @@ class Article(models.Model):
     summary = models.TextField()
     category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def is_new(self):
+        return self.created_at >= timezone.now() - timedelta(hours=24)
 
     def __str__(self):
         return self.title
