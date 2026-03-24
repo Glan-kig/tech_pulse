@@ -1,48 +1,131 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %} TechPulse{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
     <style>
+        :root {
+            --bg-dark: #0b0e14;
+            --card-dark: #151921;
+            --accent-blue: #0ea5e9;
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+        }
+
         body {
-            padding-top: 70px;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            padding-top: 80px;
+            transition: background 0.3s ease;
+        }
+
+        /* Navbar Style "Glassmorphism" */
+        .navbar {
+            background: rgba(11, 14, 20, 0.8) !important;
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 0.8rem 0;
+        }
+
+        .navbar-brand {
+            font-size: 1.4rem;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-link {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-muted) !important;
+            transition: color 0.2s;
+        }
+
+        .nav-link:hover {
+            color: var(--accent-blue) !important;
+        }
+
+        /* Boutons Compacts */
+        .btn-auth {
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-radius: 8px;
+            padding: 0.5rem 1.2rem;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary-custom {
+            background-color: var(--accent-blue);
+            border: none;
+            color: white;
+        }
+
+        .btn-primary-custom:hover {
+            background-color: #0284c7;
+            transform: translateY(-1px);
+        }
+
+        /* Footer Discret */
+        footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.85rem;
+        }
+
+        /* Animation des blocs */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
-<body class="bg-light">
+<body>
     <header>
-        <nav class="navbar navbar-dark bg-dark fixed-top">
+        <nav class="navbar navbar-dark fixed-top">
             <div class="container">
-                <a class="navbar-brand fw-bold text-primary" href="{% url 'home' %}">Tech<span class="text-white">Pulse</span></a>
-                <div class="navbar-nav ms-auto flex-row gap-3">
+                <a class="navbar-brand fw-extrabold" href="{% url 'home' %}">
+                    <span style="color: var(--accent-blue);">Tech</span>Pulse
+                </a>
+                
+                <div class="d-flex align-items-center gap-2 gap-md-4">
                     {% if user.is_authenticated %}
-                        <a class="nav-link" href="{% url 'my_favorites' %}">Mes Favoris</a>
-                        <form action="{% url 'logout' %}" method="post" class="d-inline">
+                        <a class="nav-link d-none d-sm-block" href="{% url 'my_favorites' %}">
+                            <i class="bi bi-bookmark-star me-1"></i> Favoris
+                        </a>
+                        <form action="{% url 'logout' %}" method="post" class="m-0">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-link nav-link text-white">Déconnexion</button>
+                            <button type="submit" class="btn-auth nav-link border-0 bg-transparent">
+                                <i class="bi bi-box-arrow-right"></i> <span class="d-none d-md-inline">Quitter</span>
+                            </button>
                         </form>
                     {% else %}
                         <a class="nav-link" href="{% url 'login' %}">Connexion</a>
-                        <a class="nav-link btn btn-primary text-white px-3" href="{% url 'register' %}">S'inscrire</a>
+                        <a class="btn-auth btn-primary-custom text-decoration-none shadow-sm" href="{% url 'register' %}">Rejoindre</a>
                     {% endif %}
                 </div>
             </div>
         </nav>
     </header>
 
-    <main class="container py-4">
+    <main class="container fade-in">
         {% block content %}
-        
         {% endblock %}
     </main>
 
-    <footer class="text-center py-4 mt-5 text-muted">
-        &copy; {{ current_year }} TechPulse - Veille Etudiante. Tous droits réservés.
+    <footer class="text-center py-5 mt-5 text-muted">
+        <div class="container">
+            <p class="mb-1">&copy; 2026 <strong>TechPulse</strong> — Veille Étudiante</p>
+            <small class="opacity-50">Flux d'informations technologiques en temps réel.</small>
+        </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
 </body>
 </html>

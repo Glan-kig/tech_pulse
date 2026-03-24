@@ -1,68 +1,120 @@
 {% extends 'news/base.html' %}
 
-{% block title %}TechPulse - Veille Etudiante{% endblock %}
+{% block title %}Flux Technologique - TechPulse{% endblock %}
 
 {% block content %}
-    <div class="row mb-5">
-        <div class="col-md-12">
-            <form action="." method="get" class="row g-3 bg-white p-3 rounded shadow-sm">
-                <div class="col-md-6">
-                    <input type="text" name="q" class="form-control" placeholder="Rechercher des articles..." value="{{ request.GET.q }}">
+<div class="container py-4">
+    <div class="row justify-content-center mb-5">
+        <div class="col-lg-10">
+            <form action="." method="get" class="p-3 rounded-4 shadow-lg d-flex align-items-center" 
+                  style="background: #1e2530; border: 1px solid rgba(255,255,255,0.15);">
+                <div class="flex-grow-1 px-3 d-flex align-items-center border-end border-secondary border-opacity-25">
+                    <i class="bi bi-search text-info me-2"></i>
+                    <input type="text" name="q" class="form-control bg-transparent border-0 shadow-none text-white fw-medium" 
+                           placeholder="Rechercher une innovation..." value="{{ request.GET.q }}">
                 </div>
-                <div class="col-md-4">
-                    <select name="category" class="form-select">
-                        <option value="">Toutes les catégories</option>
+                <div class="px-3 d-none d-md-block border-end border-secondary border-opacity-25">
+                    <select name="category" class="form-select border-0 shadow-none bg-transparent text-white fw-semibold" 
+                            style="width: 180px; cursor: pointer;">
+                        <option value="" class="bg-dark text-white">Toutes catégories</option>
                         {% for category in categories %}
-                            <option value="{{ category.id }}" {% if request.GET.category == category.id|stringformat:"i" %}selected{% endif %}>{{ category.name }}</option>
+                            <option value="{{ category.id }}" class="bg-dark text-white" 
+                                    {% if request.GET.category == category.id|stringformat:"i" %}selected{% endif %}>
+                                {{ category.name }}
+                            </option>
                         {% endfor %}
                     </select>
                 </div>
-                <div class="col-md-2">
-                    <button type="submit" class="btn btn-primary w-100">Rechercher</button>
-                </div>
+                <button type="submit" class="btn btn-primary-custom btn-auth rounded-3 px-4 ms-2 shadow">
+                    Explorer
+                </button>
             </form>
         </div>
     </div>
-    <div class="container py-5">
-        <h1 class="mb-4">Dernieres Nouvelles</h1>
-        <div class="row">
-            {% for article in articles %}
-            <div class="col-md-6 mb-4">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-body">
-                        <span class="badge bg-info text-dark">{{ article.category.name }}</span>
-                        <h2 class="card-title">
-                            {{ article.title }}
-                            {% if article.is_new %}
-                                <span class="badge bg-danger fs-6">Nouveau !</span>
-                            {% endif %}
-                        </h2>
-                        <p class="card-text text-muted">{{ article.summary }}</p>
-                        <hr>
-                        <h6>Sources Verifier : </h6>
-                        <p>Nombre de sources pour cet article : {{ article.sources.count }}</p>
-                        <ul class="list-unstyled">
+
+    <div class="d-flex align-items-center mb-5">
+        <h2 class="fw-bold mb-0 text-white" style="letter-spacing: -0.5px;">Dernières Nouvelles</h2>
+        <div class="flex-grow-1 ms-4 border-bottom border-white opacity-10"></div>
+    </div>
+
+    <div class="row g-4"> {% for article in articles %}
+        <div class="col-md-6"> <div class="card h-100 border-0 shadow rounded-4 overflow-hidden card-premium" 
+                 style="background: #1a1f26; border: 1px solid rgba(255,255,255,0.1) !important;">
+                
+                <div class="card-body p-4"> <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="badge rounded-pill px-3 py-2 fw-bold text-uppercase" 
+                              style="background: rgba(14, 165, 233, 0.2); color: #38bdf8; font-size: 0.75rem;">
+                            {{ article.category.name }}
+                        </span>
+                        {% if article.is_new %}
+                            <span class="badge bg-danger rounded-pill px-2 py-1 shadow-sm" style="font-size: 0.7rem;">NOUVEAU</span>
+                        {% endif %}
+                    </div>
+
+                    <h3 class="card-title fw-bold text-white mb-3" style="line-height: 1.3;">
+                        {{ article.title }}
+                    </h3>
+                    
+                    <p class="card-text mb-4" style="color: #cbd5e1; font-size: 0.95rem; line-height: 1.6;">
+                        {{ article.summary }}
+                    </p>
+
+                    <div class="p-3 rounded-3" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);">
+                        <p class="fw-bold text-info mb-2 small text-uppercase" style="letter-spacing: 1px;">
+                            <i class="bi bi-link-45deg"></i> Sources ({{ article.sources.count }})
+                        </p>
+                        <ul class="list-unstyled mb-0">
                             {% for source in article.sources.all %}
-                                <li>{{ source.site_name }} : <a href="{{ source.url }}" rel="noopener noreferrer">{{ source.url }}</a></li>
+                                <li class="text-truncate py-1">
+                                    <a href="{{ source.url }}" class="text-white opacity-75 hover-link text-decoration-none" target="_blank">
+                                        {{ source.site_name }} <i class="bi bi-box-arrow-up-right ms-1" style="font-size: 0.7rem;"></i>
+                                    </a>
+                                </li>
                             {% endfor %}
                         </ul>
                     </div>
-                    <div class="card-footer">
-                        <small class="text-muted">Publié le {{ article.created_at|date:"d/m/Y" }}</small>
-                    </div>
+                </div>
+
+                <div class="card-footer bg-transparent border-0 p-4 pt-0 d-flex justify-content-between align-items-center">
+                    <span class="text-light opacity-75 fw-medium" style="font-size: 0.9rem;">
+                        <i class="bi bi-calendar3 text-info me-2"></i> {{ article.created_at|date:"d F Y" }}
+                    </span>
+                    
                     {% if user.is_authenticated %}
-                    <form action="{% url 'add_favorite' article.id %}" method="post">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-outline-primary">Ajouter aux favoris</button>
-                    </form>
-                    {% else %}
-                    <small><a href="{% url 'login' %}">Connectez-vous</a></small>
+                        <form action="{% url 'add_favorite' article.id %}" method="post" class="m-0">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-info btn-sm rounded-pill px-3">
+                                <i class="bi bi-bookmark-plus me-1"></i> Favori
+                            </button>
+                        </form>
                     {% endif %}
                 </div>
             </div>
-            {% empty %}
-                <p>Aucune Nouvelle article pour le moment. Revenez plus tard !</p>
-            {% endfor %}
         </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <p class="text-white opacity-50 fs-4">Aucun article disponible.</p>
+        </div>
+        {% endfor %}
     </div>
+</div>
+
+<style>
+    .card-premium {
+        transition: all 0.3s ease;
+    }
+    .card-premium:hover {
+        transform: translateY(-8px);
+        background: #242b36 !important;
+        border-color: #0ea5e9 !important;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.4) !important;
+    }
+    .hover-link:hover {
+        opacity: 1 !important;
+        color: #0ea5e9 !important;
+    }
+    /* Visibilité de l'input */
+    input::placeholder { color: #94a3b8 !important; }
+    input:focus { color: white !important; }
+</style>
 {% endblock %}

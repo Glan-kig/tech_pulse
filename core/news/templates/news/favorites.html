@@ -1,26 +1,85 @@
 {% extends 'news/base.html' %}
 
-{% block title %}Connexion - TechPulse{% endblock %}
+{% block title %}Mes Favoris - TechPulse{% endblock %}
 
 {% block content %}
-    <div class="container py-5">
-        <h1>Mes Articles Favoris</h1>
-        <div class="row">
-            {% for favorite in favorites %}
-            <div class="col-md-6 mb-4">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ favorite.article.title }}</h5>
-                        <p class="text-muted small">Sauvegardé le {{ favorite.added_at|date:"d/m/Y" }}</p>
-                        {% for source in favorite.article.sources.all %}
-                            <p>{{ source.site_name }} : <a href="{{ source.url }}" rel="noopener noreferrer">{{ source.url }}</a></p>
-                        {% endfor %}
+<div class="container py-4">
+    <div class="d-flex align-items-center mb-5">
+        <h2 class="fw-bold mb-0 text-white">
+            <i class="bi bi-bookmark-star text-info me-2"></i> Mes Articles Favoris
+        </h2>
+        <div class="flex-grow-1 ms-4 border-bottom border-white opacity-10"></div>
+    </div>
+
+    <div class="row g-4">
+        {% for favorite in favorites %}
+        <div class="col-md-6">
+            <div class="card h-100 border-0 shadow rounded-4 overflow-hidden" 
+                 style="background: #1a1f26; border: 1px solid rgba(255,255,255,0.1) !important; transition: transform 0.3s ease;">
+                
+                <div class="card-body p-4">
+                    <div class="mb-3">
+                        <span class="badge rounded-pill px-3 py-2 fw-bold text-uppercase" 
+                              style="background: rgba(14, 165, 233, 0.1); color: #38bdf8; font-size: 0.7rem;">
+                            SAUVEGARDÉ
+                        </span>
+                    </div>
+
+                    <h4 class="card-title fw-bold text-white mb-2" style="line-height: 1.4;">
+                        {{ favorite.article.title }}
+                    </h4>
+                    
+                    <p class="mb-4 text-light opacity-75 small fw-medium">
+                        <i class="bi bi-clock-history text-info me-1"></i> Ajouté le {{ favorite.added_at|date:"d F Y" }}
+                    </p>
+
+                    <div class="p-3 rounded-3" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);">
+                        <p class="fw-bold text-info mb-2 small text-uppercase" style="letter-spacing: 1px; font-size: 0.7rem;">
+                            Accéder aux sources :
+                        </p>
+                        <ul class="list-unstyled mb-0">
+                            {% for source in favorite.article.sources.all %}
+                                <li class="text-truncate py-1">
+                                    <a href="{{ source.url }}" class="text-white opacity-75 hover-link text-decoration-none small" target="_blank">
+                                        <i class="bi bi-link-45deg"></i> {{ source.site_name }}
+                                        <i class="bi bi-box-arrow-up-right ms-1" style="font-size: 0.6rem;"></i>
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
                     </div>
                 </div>
+
+                <div class="card-footer bg-transparent border-0 p-4 pt-0 text-end">
+                    <a href="{{ favorite.article.url }}" class="btn btn-outline-light btn-sm rounded-pill px-3 me-2 border-opacity-25" style="font-size: 0.8rem;">
+                        Lire l'article
+                    </a>
+                    </div>
             </div>
-            {% empty %}
-                <p>Vous n'avez aucun article favori pour le moment. <a href="{% url 'home' %}">Parcourir les news</a>.</p>
-            {% endfor %}
         </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <div class="py-5 bg-dark rounded-4 border border-secondary border-opacity-10 shadow-sm">
+                <i class="bi bi-bookmark-plus text-muted fs-1"></i>
+                <p class="text-white opacity-50 fs-5 mt-3">Votre bibliothèque est vide.</p>
+                <a href="{% url 'home' %}" class="btn btn-primary-custom btn-auth mt-2">
+                    Parcourir les actualités
+                </a>
+            </div>
+        </div>
+        {% endfor %}
     </div>
+</div>
+
+<style>
+    .card:hover {
+        transform: translateY(-5px);
+        background: #242b36 !important;
+        border-color: #0ea5e9 !important;
+    }
+    .hover-link:hover {
+        opacity: 1 !important;
+        color: #0ea5e9 !important;
+    }
+</style>
 {% endblock %}
