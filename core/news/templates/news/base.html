@@ -70,9 +70,22 @@
         }
 
         /* Footer Discret */
+        /* Footer Premium & Lisible */
         footer {
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            font-size: 0.85rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1); /* Ligne plus visible */
+            background-color: rgba(0, 0, 0, 0.2); /* Un fond très légèrement différent */
+            color: #ffffff !important; /* Force le blanc pour la lisibilité */
+        }
+
+        .footer-brand {
+            color: var(--accent-blue);
+            font-weight: 800;
+        }
+
+        .footer-text-secondary {
+            color: var(--text-muted);
+            opacity: 0.9; /* Augmentation de l'opacité (avant c'était 0.5) */
+            font-size: 0.8rem;
         }
 
         /* Animation des blocs */
@@ -105,6 +118,9 @@
                                 <i class="bi bi-box-arrow-right"></i> <span class="d-none d-md-inline">Quitter</span>
                             </button>
                         </form>
+                        <a class="nav-link" href="{% url 'profile' %}">
+                            <i class="bi bi-person-circle me-1 text-info"></i> Profil
+                        </a>
                     {% else %}
                         <a class="nav-link" href="{% url 'login' %}">Connexion</a>
                         <a class="btn-auth btn-primary-custom text-decoration-none shadow-sm" href="{% url 'register' %}">Rejoindre</a>
@@ -119,10 +135,22 @@
         {% endblock %}
     </main>
 
-    <footer class="text-center py-5 mt-5 text-muted">
+    <footer class="text-center py-5 mt-5">
         <div class="container">
-            <p class="mb-1">&copy; 2026 <strong>TechPulse</strong> — Veille Étudiante</p>
-            <small class="opacity-50">Flux d'informations technologiques en temps réel.</small>
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <p class="mb-2 fw-bold text-white">
+                        <span class="footer-brand">Tech</span>Pulse 
+                        <span class="mx-2 opacity-25">|</span> 
+                        &copy; 2026 Veille Étudiante
+                    </p>
+                    
+                    <p class="footer-text-secondary mb-0">
+                        <i class="bi bi-broadcast text-info me-1"></i> 
+                        Flux d'informations technologiques en temps réel pour les étudiants.
+                    </p>
+                </div>
+            </div>
         </div>
     </footer>
 

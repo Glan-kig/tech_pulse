@@ -56,3 +56,15 @@ def my_favorites(request):
     user_favorites = Favorite.objects.filter(user=request.user).order_by('-added_at').select_related('article')
 
     return render(request, 'news/favorites.html', {'favorites': user_favorites})
+
+@login_required
+def profile(request):
+    fav_count = Favorite.objects.filter(user=request.user).count()
+    recent_fav = Favorite.objects.filter(user=request.user).order_by('-added_at')[:5]
+
+    content = {
+        'fav_count' : fav_count,
+        'recent_fav' : recent_fav,
+    }
+
+    return render(request, 'news/profile.html', content)

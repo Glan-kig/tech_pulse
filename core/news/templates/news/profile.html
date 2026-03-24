@@ -1,0 +1,109 @@
+{% extends "news/base.html" %}
+
+{% block title %}Mon Profil - TechPulse{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row g-4 justify-content-center">
+        
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-lg rounded-4 text-center" 
+                 style="background: #1a1f26; border: 1px solid rgba(255,255,255,0.2) !important;">
+                <div class="card-body p-4">
+                    <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3 shadow" 
+                         style="width: 80px; height: 80px; background: #0ea5e9; font-size: 2.2rem; color: #ffffff; font-weight: 800; border: 3px solid rgba(255,255,255,0.1);">
+                        {{ user.username|first|upper }}
+                    </div>
+                    
+                    <h2 class="text-white fw-bold mb-1" style="font-size: 1.8rem;">{{ user.username }}</h2>
+                    <p class="text-info fw-medium mb-4" style="font-size: 1rem;">{{ user.email }}</p>
+                    
+                    <div class="row g-0 py-3 border-top border-bottom border-white border-opacity-10 mb-4">
+                        <div class="col-6 border-end border-white border-opacity-10">
+                            <h4 class="text-white fw-bold mb-0">{{ fav_count }}</h4>
+                            <small class="text-light fw-bold text-uppercase tracking-widest" style="font-size: 0.7rem; opacity: 0.9;">Favoris</small>
+                        </div>
+                        <div class="col-6">
+                            <h4 class="text-white fw-bold mb-0">{{ user.date_joined|date:"M Y" }}</h4>
+                            <small class="text-light fw-bold text-uppercase tracking-widest" style="font-size: 0.7rem; opacity: 0.9;">Membre</small>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'password_change' %}" class="btn btn-outline-info btn-sm rounded-pill py-2 fw-bold shadow-sm">
+                            <i class="bi bi-shield-lock me-2"></i>Changer le mot de passe
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-lg rounded-4 h-100" 
+                 style="background: #1a1f26; border: 1px solid rgba(255,255,255,0.1) !important;">
+                <div class="card-header bg-transparent border-bottom border-white border-opacity-10 p-4">
+                    <h4 class="text-white fw-bold mb-0">
+                        <i class="bi bi-clock-history text-info me-2"></i>Derniers sauvegardés
+                    </h4>
+                </div>
+                
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush">
+                        {% for fav in recent_fav %}
+                            <li class="list-group-item bg-transparent border-white border-opacity-10 p-4 transition-all hover-dark-light">
+                                <div class="mb-2">
+                                    <a href="{{ fav.article.sources.first.url }}" class="text-white text-decoration-none fw-bold fs-5 d-block hover-blue" target="_blank">
+                                        {{ fav.article.title|truncatechars:65 }}
+                                    </a>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <span class="text-light fw-medium" style="font-size: 0.85rem; opacity: 0.8;">
+                                        <i class="bi bi-calendar-event text-info me-1"></i> Sauvegardé il y a {{ fav.added_at|timesince }}
+                                    </span>
+                                </div>
+                            </li>
+                        {% empty %}
+                            <li class="list-group-item bg-transparent text-center py-5">
+                                <p class="text-white opacity-50 fs-5">Aucun favori pour le moment.</p>
+                                <a href="{% url 'home' %}" class="btn btn-primary-custom btn-auth mt-3">Explorer les news</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                {% if recent_fav %}
+                <div class="card-footer bg-transparent border-0 p-4 text-center">
+                    <a href="{% url 'my_favorites' %}" class="btn btn-link text-info fw-bold text-decoration-none hover-underline">
+                        Gérer tous mes favoris <i class="bi bi-arrow-right-short fs-4 align-middle"></i>
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    /* Amélioration visuelle globale */
+    .text-light { color: #f1f5f9 !important; }
+    .text-info { color: #38bdf8 !important; }
+    
+    .hover-dark-light:hover {
+        background: rgba(255, 255, 255, 0.05) !important;
+    }
+    
+    .hover-blue:hover {
+        color: #38bdf8 !important;
+    }
+    
+    .hover-underline:hover {
+        text-decoration: underline !important;
+        opacity: 1;
+    }
+
+    .tracking-widest { letter-spacing: 0.15em; }
+    
+    .transition-all { transition: all 0.3s ease; }
+</style>
+{% endblock %}
