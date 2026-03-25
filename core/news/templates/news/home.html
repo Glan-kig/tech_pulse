@@ -89,6 +89,19 @@
                         </form>
                     {% endif %}
                 </div>
+                <div>
+                    <h2>Commentaires récents</h2>
+                    <ul>
+                        {% for comment in recent_comments %}
+                            <li>
+                                <strong>{{ comment.author }}</strong> sur <em>{{ comment.article.title }}</em> : 
+                                    {{ comment.content|truncatewords:10 }}
+                            </li>
+                        {% empty %}
+                            <li>Aucun commentaire pour le moment.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
             </div>
         </div>
         {% empty %}

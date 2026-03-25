@@ -39,3 +39,15 @@ class Favorite(models.Model):
         # Assure qu'un utilisateur ne peut pas ajouter le même article plusieurs fois à ses favoris
         unique_together = ('user', 'article')
 
+class Comment(models.Model):
+    article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name='comments')
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at'] # Le plus récent en premier
+
+    def __str__(self):
+        return f"Commentaire de {self.author.username} sur {self.article.title}"
+

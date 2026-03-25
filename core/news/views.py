@@ -1,9 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from django.db.models import Q
-from .models import Article, Category, Favorite
+from .models import Article, Category, Favorite, Comment
+from .forms import CommentForm
 
 def home(request):
     query = request.GET.get('q') # Récupération de la requête de recherche depuis les paramètres de la requête
@@ -11,6 +12,8 @@ def home(request):
 
     # On recupère tous les articles, triés par date de création décroissante, et on précharge les sources associées pour éviter les requêtes supplémentaires
     articles = Article.objects.all().order_by('-created_at').prefetch_related('sources')
+
+    recent_comments = Comment.objects.order_set().all()[:5]
 
     # Filtrage par recherche si une requête est présente
     if query:
@@ -26,6 +29,7 @@ def home(request):
     content = {
         'articles': articles,
         'categories': categories,
+        'recent_comments' : recent_comments,
     }
 
     return render(request, 'news/home.html', content)
@@ -68,3 +72,27 @@ def profile(request):
     }
 
     return render(request, 'news/profile.html', content)
+
+def article_detail(request, article_id):
+    article = get_object_or_404(Article, id=article_id)
+    comments = article.comments.all()
+    
+    if request.method == 'POST':
+        if not request.user.is_authenticated:
+            return redirect('login')
+            
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.article = article
+            comment.author = request.user
+            comment.save()
+            return redirect('article_detail', article_id=article.id)
+    else:
+        form = CommentForm()
+        
+    return render(request, 'news/article_detail.html', {
+        'article': article,
+        'comments': comments,
+        'form': form
+    })
