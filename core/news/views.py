@@ -73,21 +73,29 @@ def profile(request):
 
     return render(request, 'news/profile.html', content)
 
-def article_detail(request, article_id):
-    article = get_object_or_404(Article, id=article_id)
-    comments = article.comments.all()
+def article_detail(request, pk):
+    article = get_object_or_404(Article, pk=pk)
+    comments = article.comments.all().order_by('-created_at')
     
     if request.method == 'POST':
-        if not request.user.is_authenticated:
+        # On vérifie d'abord que l'utilisateur est bien connecté
+        if request.user.is_authenticated:
+            form = CommentForm(request.POST)
+            if form.is_valid():
+                # 1. On crée l'objet en mémoire sans l'enregistrer en BDD
+                comment = form.save(commit=False)
+                
+                # 2. On remplit MANUELLEMENT les champs manquants
+                comment.article = article
+                comment.author = request.user  # C'est cette ligne qui corrige ton erreur !
+                
+                # 3. Maintenant on peut sauvegarder pour de vrai
+                comment.save()
+                
+                return redirect('article_detail', pk=article.pk)
+        else:
+            # Si un malin bypass le template, on le renvoie vers le login
             return redirect('login')
-            
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.article = article
-            comment.author = request.user
-            comment.save()
-            return redirect('article_detail', article_id=article.id)
     else:
         form = CommentForm()
         

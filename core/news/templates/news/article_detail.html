@@ -1,13 +1,22 @@
 {% extends 'news/base.html' %}
 
 {% block content %}
-<div class="container py-4">
-    <hr class="my-5 border-secondary opacity-25">
+<div class="container py-5">
+    <div class="row justify-content-center mb-5">
+        <div class="col-lg-10">
+            <h1 class="text-white fw-bold mb-3">{{ article.title }}</h1>
+            <div class="text-light opacity-75 mb-4" style="font-size: 1.1rem; line-height: 1.8;">
+                {{ article.content|linebreaks }}
+            </div>
+            <hr class="border-secondary opacity-25">
+        </div>
+    </div>
 
     <div class="row justify-content-center">
         <div class="col-lg-8">
             <h4 class="text-white fw-bold mb-4">
-                <i class="bi bi-chat-left-text text-info me-2"></i> Discussion ({{ comments.count }})
+                <i class="bi bi-chat-left-text text-info me-2"></i> 
+                Discussion ({{ comments.count }})
             </h4>
 
             {% if user.is_authenticated %}
@@ -15,48 +24,51 @@
                     <div class="card-body p-4">
                         <form method="post">
                             {% csrf_token %}
-                            {{ form.content }}
-                            <div class="text-end mt-3">
-                                <button type="submit" class="btn btn-primary-custom px-4 fw-bold rounded-pill">Publier</button>
+                            <div class="mb-3">
+                                {{ form.content }}
+                            </div>
+                            <div class="text-end">
+                                <button type="submit" class="btn btn-primary px-4 fw-bold rounded-pill">
+                                    Publier le commentaire
+                                </button>
                             </div>
                         </form>
                     </div>
                 </div>
             {% else %}
-                <div class="alert bg-dark border-secondary text-light text-center rounded-4 mb-5">
-                    <p class="mb-0 small">Vous devez être <a href="{% url 'login' %}" class="text-info fw-bold text-decoration-none">connecté</a> pour participer.</p>
+                <div class="alert bg-dark border-secondary text-light text-center rounded-4 mb-5 py-4">
+                    <p class="mb-0">
+                        Vous souhaitez participer ? 
+                        <a href="{% url 'login' %}" class="text-info fw-bold text-decoration-none">Connectez-vous</a> 
+                        pour laisser un commentaire.
+                    </p>
                 </div>
             {% endif %}
 
             <div class="comment-list">
                 {% for comment in comments %}
-                    <div class="mb-4 p-4 rounded-4" style="background: #151921; border-left: 3px solid #0ea5e9;">
+                    <div class="mb-4 p-4 rounded-4" style="background: #151921; border-left: 4px solid #0ea5e9;">
                         <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="fw-bold text-white">{{ comment.author.username }}</span>
-                            <small class="text-light opacity-50" style="font-size: 0.75rem;">
-                                {{ comment.created_at|timesince }}
+                            <span class="fw-bold text-white">
+                                <i class="bi bi-person-circle me-1 opacity-50"></i>
+                                {{ comment.author.username }}
+                            </span>
+                            <small class="text-light opacity-50">
+                                il y a {{ comment.created_at|timesince }}
                             </small>
                         </div>
-                        <p class="text-light mb-0" style="font-size: 0.95rem; opacity: 0.9;">{{ comment.content }}</p>
+                        <p class="text-light mb-0" style="font-size: 0.95rem; opacity: 0.9;">
+                            {{ comment.content }}
+                        </p>
                     </div>
                 {% empty %}
-                    <p class="text-center text-muted py-4">Soyez le premier à lancer la discussion !</p>
+                    <div class="text-center text-muted py-5">
+                        <i class="bi bi-chat-dots fs-1 d-block mb-3 opacity-25"></i>
+                        <p>Aucun commentaire pour le moment. Soyez le premier à réagir !</p>
+                    </div>
                 {% endfor %}
             </div>
         </div>
     </div>
 </div>
 {% endblock %}
-<h1>{{ article.title }}</h1>
-<p>{{ article.content }}</p>
-
-<hr>
-<h3>Tous les commentaires ({{ article.comments.count }})</h3>
-{% for comment in article.comments.all %}
-    <div class="comment">
-        <p><strong>{{ comment.author }}</strong> - {{ comment.created_at|date:"d M Y" }}</p>
-        <p>{{ comment.content }}</p>
-    </div>
-{% empty %}
-    <p>Soyez le premier à commenter !</p>
-{% endfor %}
