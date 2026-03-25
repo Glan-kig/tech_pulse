@@ -47,3 +47,16 @@
     </div>
 </div>
 {% endblock %}
+<h1>{{ article.title }}</h1>
+<p>{{ article.content }}</p>
+
+<hr>
+<h3>Tous les commentaires ({{ article.comments.count }})</h3>
+{% for comment in article.comments.all %}
+    <div class="comment">
+        <p><strong>{{ comment.author }}</strong> - {{ comment.created_at|date:"d M Y" }}</p>
+        <p>{{ comment.content }}</p>
+    </div>
+{% empty %}
+    <p>Soyez le premier à commenter !</p>
+{% endfor %}

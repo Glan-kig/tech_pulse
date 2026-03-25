@@ -37,7 +37,8 @@
         <div class="flex-grow-1 ms-4 border-bottom border-white opacity-10"></div>
     </div>
 
-    <div class="row g-4"> {% for article in articles %}
+    <div class="row g-4"> 
+        {% for article in articles %}
         <div class="col-md-6"> <div class="card h-100 border-0 shadow rounded-4 overflow-hidden card-premium" 
                  style="background: #1a1f26; border: 1px solid rgba(255,255,255,0.1) !important;">
                 
@@ -101,6 +102,12 @@
                             <li>Aucun commentaire pour le moment.</li>
                         {% endfor %}
                     </ul>
+                </div>
+                <div class="article-preview">
+                    <p>{{ article.content|truncatewords:20 }}</p>
+                    <a href="{% url 'article_detail' article.pk %}" class="btn btn-primary">
+                        Lire et commenter
+                    </a>
                 </div>
             </div>
         </div>

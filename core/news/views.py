@@ -13,7 +13,7 @@ def home(request):
     # On recupère tous les articles, triés par date de création décroissante, et on précharge les sources associées pour éviter les requêtes supplémentaires
     articles = Article.objects.all().order_by('-created_at').prefetch_related('sources')
 
-    recent_comments = Comment.objects.order_set().all()[:5]
+    recent_comments = Comment.objects.all().order_by('-created_at')[:5]
 
     # Filtrage par recherche si une requête est présente
     if query:
