@@ -3,7 +3,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from django.db.models import Q
-from .models import Article, Category, Favorite, Comment
+from .models import Article, Category, Favorite, Comment, CommentLike
 from .forms import CommentForm
 
 def home(request):
@@ -104,3 +104,13 @@ def article_detail(request, pk):
         'comments': comments,
         'form': form
     })
+
+@login_required
+def like_comment(request, comment_id):
+    comment = get_object_or_404(Comment, id = comment_id)
+    like, created = CommentLike.objects.get_or_create(user=request.user, comment=comment)
+
+    if not created:
+        like.delete()
+
+    return redirect('article_detail', pk=comment.article.pk)
