@@ -6,8 +6,8 @@
 <div class="container py-4">
     <div class="row justify-content-center mb-5">
         <div class="col-lg-10">
-            <form action="." method="get" class="p-3 rounded-4 shadow-lg d-flex align-items-center" 
-                  style="background: #1e2530; border: 1px solid rgba(255,255,255,0.15);">
+            <form action="." method="get" class="p-2 rounded-4 shadow-lg d-flex align-items-center" 
+                  style="background: #1a1f26; border: 1px solid rgba(14, 165, 233, 0.2);">
                 <div class="flex-grow-1 px-3 d-flex align-items-center border-end border-secondary border-opacity-25">
                     <i class="bi bi-search text-info me-2"></i>
                     <input type="text" name="q" class="form-control bg-transparent border-0 shadow-none text-white fw-medium" 
@@ -25,26 +25,28 @@
                         {% endfor %}
                     </select>
                 </div>
-                <button type="submit" class="btn btn-primary-custom btn-auth rounded-3 px-4 ms-2 shadow">
+                <button type="submit" class="btn btn-info rounded-pill px-4 ms-2 shadow fw-bold text-white">
                     Explorer
                 </button>
             </form>
         </div>
     </div>
 
-    <div class="d-flex align-items-center mb-5">
+    <div class="d-flex align-items-center mb-4">
         <h2 class="fw-bold mb-0 text-white" style="letter-spacing: -0.5px;">Dernières Nouvelles</h2>
         <div class="flex-grow-1 ms-4 border-bottom border-white opacity-10"></div>
     </div>
 
     <div class="row g-4"> 
-        {% for article in articles %}
-        <div class="col-md-6"> <div class="card h-100 border-0 shadow rounded-4 overflow-hidden card-premium" 
-                 style="background: #1a1f26; border: 1px solid rgba(255,255,255,0.1) !important;">
+        {% for article in page_obj %}
+        <div class="col-md-6"> 
+            <div class="card h-100 border-0 shadow rounded-4 overflow-hidden card-premium" 
+                 style="background: #1a1f26; border: 1px solid rgba(255,255,255,0.05) !important;">
                 
-                <div class="card-body p-4"> <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="card-body p-4"> 
+                    <div class="d-flex justify-content-between align-items-center mb-3">
                         <span class="badge rounded-pill px-3 py-2 fw-bold text-uppercase" 
-                              style="background: rgba(14, 165, 233, 0.2); color: #38bdf8; font-size: 0.75rem;">
+                              style="background: rgba(14, 165, 233, 0.15); color: #38bdf8; font-size: 0.7rem;">
                             {{ article.category.name }}
                         </span>
                         {% if article.is_new %}
@@ -52,23 +54,23 @@
                         {% endif %}
                     </div>
 
-                    <h3 class="card-title fw-bold text-white mb-3" style="line-height: 1.3;">
+                    <h3 class="card-title fw-bold text-white mb-3" style="line-height: 1.3; font-size: 1.4rem;">
                         {{ article.title }}
                     </h3>
                     
-                    <p class="card-text mb-4" style="color: #cbd5e1; font-size: 0.95rem; line-height: 1.6;">
-                        {{ article.summary }}
+                    <p class="card-text mb-4" style="color: #94a3b8; font-size: 0.95rem; line-height: 1.6;">
+                        {{ article.content|truncatewords:25 }}
                     </p>
 
-                    <div class="p-3 rounded-3" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);">
-                        <p class="fw-bold text-info mb-2 small text-uppercase" style="letter-spacing: 1px;">
+                    <div class="p-3 rounded-3 mb-3" style="background: rgba(15, 23, 42, 0.5); border: 1px solid rgba(255,255,255,0.05);">
+                        <p class="fw-bold text-info mb-2 small text-uppercase" style="letter-spacing: 1px; font-size: 0.7rem;">
                             <i class="bi bi-link-45deg"></i> Sources ({{ article.sources.count }})
                         </p>
                         <ul class="list-unstyled mb-0">
-                            {% for source in article.sources.all %}
-                                <li class="text-truncate py-1">
+                            {% for source in article.sources.all|slice:":2" %}
+                                <li class="text-truncate py-1" style="font-size: 0.85rem;">
                                     <a href="{{ source.url }}" class="text-white opacity-75 hover-link text-decoration-none" target="_blank">
-                                        {{ source.site_name }} <i class="bi bi-box-arrow-up-right ms-1" style="font-size: 0.7rem;"></i>
+                                        {{ source.site_name }} <i class="bi bi-box-arrow-up-right ms-1" style="font-size: 0.6rem;"></i>
                                     </a>
                                 </li>
                             {% endfor %}
@@ -77,64 +79,83 @@
                 </div>
 
                 <div class="card-footer bg-transparent border-0 p-4 pt-0 d-flex justify-content-between align-items-center">
-                    <span class="text-light opacity-75 fw-medium" style="font-size: 0.9rem;">
-                        <i class="bi bi-calendar3 text-info me-2"></i> {{ article.created_at|date:"d F Y" }}
+                    <span class="text-light opacity-50" style="font-size: 0.85rem;">
+                        <i class="bi bi-calendar3 text-info me-2"></i> {{ article.created_at|date:"d M Y" }}
                     </span>
                     
-                    {% if user.is_authenticated %}
-                        <form action="{% url 'add_favorite' article.id %}" method="post" class="m-0">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-outline-info btn-sm rounded-pill px-3">
-                                <i class="bi bi-bookmark-plus me-1"></i> Favori
-                            </button>
-                        </form>
-                    {% endif %}
-                </div>
-                <div>
-                    <h2>Commentaires récents</h2>
-                    <ul>
-                        {% for comment in recent_comments %}
-                            <li>
-                                <strong>{{ comment.author }}</strong> sur <em>{{ comment.article.title }}</em> : 
-                                    {{ comment.content|truncatewords:10 }}
-                            </li>
-                        {% empty %}
-                            <li>Aucun commentaire pour le moment.</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-                <div class="article-preview">
-                    <p>{{ article.content|truncatewords:20 }}</p>
-                    <a href="{% url 'article_detail' article.pk %}" class="btn btn-primary">
-                        Lire et commenter
-                    </a>
+                    <div class="d-flex gap-2">
+                        {% if user.is_authenticated %}
+                            <form action="{% url 'add_favorite' article.id %}" method="post" class="m-0">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-outline-light btn-sm rounded-pill opacity-75">
+                                    <i class="bi bi-bookmark"></i>
+                                </button>
+                            </form>
+                        {% endif %}
+                        <a href="{% url 'article_detail' article.pk %}" class="btn btn-info btn-sm rounded-pill px-3 fw-bold text-white">
+                            Laisser un commentaire
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
         {% empty %}
         <div class="col-12 text-center py-5">
-            <p class="text-white opacity-50 fs-4">Aucun article disponible.</p>
+            <i class="bi bi- search fs-1 text-muted opacity-25"></i>
+            <p class="text-white opacity-50 fs-4 mt-3">Aucun article ne correspond à votre recherche.</p>
         </div>
         {% endfor %}
+    </div>
+
+    {% if page_obj.paginator.num_pages > 1 %}
+    <nav aria-label="Page navigation" class="mt-5">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+                <li class="page-item"><a class="page-link bg-dark border-secondary text-info" href="?page=1">&laquo;</a></li>
+                <li class="page-item"><a class="page-link bg-dark border-secondary text-info" href="?page={{ page_obj.previous_page_number }}">Précédent</a></li>
+            {% endif %}
+            
+            <li class="page-item disabled">
+                <span class="page-link bg-info border-info text-white fw-bold">
+                    {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+                </span>
+            </li>
+
+            {% if page_obj.has_next %}
+                <li class="page-item"><a class="page-link bg-dark border-secondary text-info" href="?page={{ page_obj.next_page_number }}">Suivant</a></li>
+                <li class="page-item"><a class="page-link bg-dark border-secondary text-info" href="?page={{ page_obj.paginator.num_pages }}">&raquo;</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+
+    <div class="mt-5 p-4 rounded-4" style="background: #1a1f26; border: 1px solid rgba(14, 165, 233, 0.1);">
+        <h4 class="text-white fw-bold mb-3"><i class="bi bi-chat-dots text-info me-2"></i>Dernières réactions</h4>
+        <div class="row">
+            {% for comment in recent_comments %}
+            <div class="col-md-4 mb-3">
+                <div class="p-3 rounded-3" style="background: rgba(255,255,255,0.03);">
+                    <small class="text-info fw-bold">{{ comment.author.username }}</small>
+                    <p class="text-light small mb-0 opacity-75">{{ comment.content|truncatewords:8 }}</p>
+                    <a href="{% url 'article_detail' comment.article.pk %}" class="very-small text-decoration-none opacity-50">Sur : {{ comment.article.title|truncatechars:20 }}</a>
+                </div>
+            </div>
+            {% empty %}
+            <p class="text-muted small ms-3">Pas encore de commentaires.</p>
+            {% endfor %}
+        </div>
     </div>
 </div>
 
 <style>
-    .card-premium {
-        transition: all 0.3s ease;
-    }
+    .card-premium { transition: all 0.3s ease; }
     .card-premium:hover {
-        transform: translateY(-8px);
-        background: #242b36 !important;
+        transform: translateY(-5px);
         border-color: #0ea5e9 !important;
-        box-shadow: 0 15px 35px rgba(0,0,0,0.4) !important;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
     }
-    .hover-link:hover {
-        opacity: 1 !important;
-        color: #0ea5e9 !important;
-    }
-    /* Visibilité de l'input */
-    input::placeholder { color: #94a3b8 !important; }
-    input:focus { color: white !important; }
+    .page-link { border: none !important; margin: 0 3px; border-radius: 8px !important; }
+    .hover-link:hover { color: #0ea5e9 !important; opacity: 1 !important; }
+    .very-small { font-size: 0.7rem; color: #38bdf8; }
 </style>
 {% endblock %}
