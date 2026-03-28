@@ -24,11 +24,11 @@ class Command(BaseCommand):
 
             # Eviter les doublons
             if not Article.objects.filter(title=title).exists():
-                # summary_ia = generate_ai_summary(description) # appel a l'IA
+                summary_ia = generate_ai_summary(description) # appel a l'IA
                 article = Article.objects.create(
                     title=title,
                     summary = description[:500],
-                    # ai_summary = summary_ia, # On enregistre le resumer de l'IA
+                    ai_summary = summary_ia, # On enregistre le resumer de l'IA
                     category = cat
                 )
 
