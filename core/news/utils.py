@@ -2,6 +2,7 @@ import openai
 import os
 import requests
 import time
+import html
 
 """
 def generate_ai_summary(text):
@@ -28,14 +29,15 @@ API_URL = "https://api-inference.huggingface.co/models/facebook/bart-large-cnn"
 headers = {"Authorization" : f"Bearer {HF_TOKEN}"}
 
 def generate_ai_summary(text):
+    text_clean = html.unescape(text)
     """
     Génère un résumé automatique pour les articles de TechPulse.
     """
-    if not text or len(text) < 100:
-        return text  # Trop court pour résumer
+    if not text_clean or len(text_clean) < 100:
+        return text_clean  # Trop court pour résumer
 
     payload = {
-        "inputs": text,
+        "inputs": text_clean,
         "parameters": {"max_length": 150, "min_length": 50, "do_sample": False}
     }
 
@@ -45,7 +47,8 @@ def generate_ai_summary(text):
         
         if response.status_code == 200:
             result = response.json()
-            return result[0].get('summary_text')
+            summary = result[0].get('summary_text')
+            return html.unescape(summary)
         
         elif response.status_code == 503:
             # Le modèle charge, on attend un peu
