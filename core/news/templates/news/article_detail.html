@@ -12,6 +12,18 @@
         </div>
     </div>
 
+    <div>
+        {% if article.ai_summary %}
+            <div>
+                <h5>
+                    <i class="bi bi-robot"></i>
+                    Resume de l'IA TechPulse
+                </h5>
+                <p class="mb-0 italic">{{ article.ai_summary|linebreaks }}</p>
+            </div>
+        {% endif %}
+    </div>
+
     <div class="row justify-content-center">
         <div class="col-lg-8">
             <h4 class="text-white fw-bold mb-4">

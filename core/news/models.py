@@ -14,6 +14,7 @@ class Article(models.Model):
     summary = models.TextField()
     category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    ai_summary =  models.TextField(blank=True, null=True)
 
     @property
     def is_new(self):
