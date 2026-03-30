@@ -72,6 +72,8 @@ class Command(BaseCommand):
             }
         ]
 
+        headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) TechPulse-Crawler/1.0'}
+
         # Systeme de tri par mot-cles pour les categoies
         CATEGORY_MAP = {
             "Intelligence Artificielle" : ["ia", "ai", "chatgpt", "machine learning", "openai"],
@@ -92,18 +94,18 @@ class Command(BaseCommand):
                 if any(kw in text for kw in keywords) :
                     category, _ = Category.objects.get_or_create(name=cat_name)
                     return category
-            default_cat = Category.objects.get_or_create(name="Général")
+            default_cat, created = Category.objects.get_or_create(name="Général")
             return default_cat
         
         # Boucle pour les sources
         for src in SOURCE_CONFIG :
             self.stdout.write(f"Scraping de : {src['site_name']}...")
             try :
-                response = requests.get(src['url'], timeout=10)
+                response = requests.get(src['url'], headers=headers, timeout=10)
                 soup = BeautifulSoup(response.content, features="xml")
                 items = soup.find_all('item')
 
-                for item in items[:5] :
+                for item in items[:10]: # Limite à 10 articles par source pour éviter les surcharges:
                     title = item.title.text
                     link = item.link.text
                     description = item.description.text if item.description else ""
