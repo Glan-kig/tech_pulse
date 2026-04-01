@@ -4,43 +4,60 @@
 <div class="container py-5">
     <div class="row justify-content-center mb-5">
         <div class="col-lg-10">
-            <h1 class="text-white fw-bold mb-3">{{ article.title }}</h1>
-            <div class="text-light opacity-75 mb-4" style="font-size: 1.1rem; line-height: 1.8;">
+            <nav aria-label="breadcrumb" class="mb-3">
+                <span class="badge bg-info text-dark rounded-pill fw-bold">{{ article.category.name }}</span>
+            </nav>
+            <h1 class="text-white fw-bold mb-4 display-5">{{ article.title }}</h1>
+            
+            {% if article.ai_summary %}
+                <div class="card border-0 rounded-4 mb-5 shadow-lg" style="background: #0f172a; border: 2px solid #0ea5e9 !important;">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <span class="badge bg-info text-dark me-2 px-3 py-2 rounded-pill fw-bold">
+                                <i class="bi bi-robot me-1"></i> IA
+                            </span>
+                            <h5 class="text-info fw-bold mb-0">Résumé TechPulse</h5>
+                        </div>
+                    
+                        <div class="text-white fs-5 lh-base fw-normal">
+                            {{ article.ai_summary|linebreaks }}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            <div class="text-white mb-4" style="font-size: 1.15rem; line-height: 1.9; text-align: justify; font-weight: 400;">
                 {{ article.content|linebreaks }}
             </div>
-            <hr class="border-secondary opacity-25">
-        </div>
-    </div>
 
-    <div>
-        {% if article.ai_summary %}
-            <div>
-                <h5>
-                    <i class="bi bi-robot"></i>
-                    Resume de l'IA TechPulse
-                </h5>
-                <p class="mb-0 italic">{{ article.ai_summary|linebreaks }}</p>
+            <div class="d-flex justify-content-between align-items-center mt-5 pt-4 border-top border-secondary">
+                <span class="text-info small fw-bold">Publié le {{ article.created_at|date:"d M Y" }}</span>
+                {% if article.sources.all %}
+                    <a href="{{ article.sources.first.url }}" target="_blank" class="btn btn-info rounded-pill px-4 fw-bold text-dark">
+                        <i class="bi bi-box-arrow-up-right me-2"></i>Lire l'article original
+                    </a>
+                {% endif %}
             </div>
-        {% endif %}
+        </div>
     </div>
 
     <div class="row justify-content-center">
         <div class="col-lg-8">
-            <h4 class="text-white fw-bold mb-4">
+            <h4 class="text-white fw-bold mb-4 mt-5">
                 <i class="bi bi-chat-left-text text-info me-2"></i> 
                 Discussion ({{ comments.count }})
             </h4>
 
             {% if user.is_authenticated %}
-                <div class="card border-0 rounded-4 mb-5 shadow-sm" style="background: #1a1f26; border: 1px solid rgba(255,255,255,0.1) !important;">
+                <div class="card border-0 rounded-4 mb-5 shadow-sm" style="background: #1e293b; border: 1px solid #334155 !important;">
                     <div class="card-body p-4">
                         <form method="post">
                             {% csrf_token %}
-                            <div class="mb-3">
+                            <div class="mb-3 custom-form text-white">
                                 {{ form.content }}
                             </div>
                             <div class="text-end">
-                                <button type="submit" class="btn btn-primary px-4 fw-bold rounded-pill">
+                                <button type="submit" class="btn btn-info px-5 fw-bold rounded-pill text-dark">
                                     Publier le commentaire
                                 </button>
                             </div>
@@ -48,10 +65,10 @@
                     </div>
                 </div>
             {% else %}
-                <div class="alert bg-dark border-secondary text-light text-center rounded-4 mb-5 py-4">
+                <div class="alert bg-dark border-info text-white text-center rounded-4 mb-5 py-4">
                     <p class="mb-0">
                         Vous souhaitez participer ? 
-                        <a href="{% url 'login' %}" class="text-info fw-bold text-decoration-none">Connectez-vous</a> 
+                        <a href="{% url 'login' %}" class="text-info fw-bold text-decoration-none border-bottom border-info">Connectez-vous</a> 
                         pour laisser un commentaire.
                     </p>
                 </div>
@@ -59,34 +76,31 @@
 
             <div class="comment-list">
                 {% for comment in comments %}
-                    <div class="mb-4 p-4 rounded-4" style="background: #151921; border-left: 4px solid #0ea5e9;">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="fw-bold text-white">
-                                <i class="bi bi-person-circle me-1 opacity-50"></i>
-                                {{ comment.author.username }}
-                            </span>
-                            <small class="text-light opacity-50">
-                                il y a {{ comment.created_at|timesince }}
-                            </small>
-                        </div>
-                        <p class="text-light mb-0" style="font-size: 0.95rem; opacity: 0.9;">
-                            {{ comment.content }}
-                        </p>
-                        <div class="d-flex align-items-center">
+                    <div class="mb-4 p-4 rounded-4 shadow-sm" style="background: #0f172a; border: 1px solid #334155; border-left: 5px solid #0ea5e9;">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <span class="fw-bold text-white fs-5">
+                                    <i class="bi bi-person-circle me-2 text-info"></i>{{ comment.author.username }}
+                                </span>
+                                <br>
+                                <small class="text-info opacity-100" style="font-size: 0.8rem;">
+                                    il y a {{ comment.created_at|timesince }}
+                                </small>
+                            </div>
                             <a href="{% url 'like_comment' comment.id %}" class="text-decoration-none">
-                                <button class="btn btn-sm btn-outline-info rounded-pill px-3">
-                                    <i class="bi bi-hand-thumbs-up me-1"></i>
-                                        Liker 
-                                    <span class="badge bg-light text-dark ms-1">
-                                        {{ comment.likes.count }}
-                                    </span>
+                                <button class="btn btn-sm btn-info text-dark fw-bold rounded-pill px-3">
+                                    <i class="bi bi-hand-thumbs-up-fill me-1"></i>
+                                    {{ comment.likes.count }}
                                 </button>
                             </a>
                         </div>
+                        <p class="text-white mb-0" style="font-size: 1.05rem;">
+                            {{ comment.content }}
+                        </p>
                     </div>
                 {% empty %}
-                    <div class="text-center text-muted py-5">
-                        <i class="bi bi-chat-dots fs-1 d-block mb-3 opacity-25"></i>
+                    <div class="text-center text-white-50 py-5">
+                        <i class="bi bi-chat-dots fs-1 d-block mb-3 text-info opacity-50"></i>
                         <p>Aucun commentaire pour le moment. Soyez le premier à réagir !</p>
                     </div>
                 {% endfor %}
@@ -94,4 +108,23 @@
         </div>
     </div>
 </div>
+
+<style>
+    /* Styles pour rendre les formulaires Django ultra-clairs */
+    .custom-form textarea {
+        background: #020617 !important;
+        border: 2px solid #334155 !important;
+        color: #ffffff !important; /* Force le texte en blanc */
+        border-radius: 15px;
+        padding: 15px;
+        width: 100%;
+        font-size: 1.1rem;
+    }
+    .custom-form textarea:focus {
+        border-color: #0ea5e9 !important;
+        box-shadow: 0 0 0 0.25rem rgba(14, 165, 233, 0.4);
+        outline: none;
+    }
+    ::placeholder { color: #94a3b8 !important; }
+</style>
 {% endblock %}
