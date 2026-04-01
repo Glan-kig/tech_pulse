@@ -9,72 +9,109 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     
     <style>
+        /* Système de variables dynamiques */
         :root {
-            --bg-dark: #0b0e14;
-            --card-dark: #151921;
+            --bg-body: #0b0e14;
+            --bg-navbar: rgba(11, 14, 20, 0.8);
+            --card-bg: #151921;
             --accent-blue: #0ea5e9;
-            --text-main: #e2e8f0;
+            --text-main: #ffffff;
             --text-muted: #94a3b8;
+            --border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        /* Mode Clair Overrides */
+        body.light-mode {
+            --bg-body: #f8fafc;
+            --bg-navbar: rgba(255, 255, 255, 0.9);
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: rgba(0, 0, 0, 0.1);
         }
 
         body {
-            background-color: var(--bg-dark);
+            background-color: var(--bg-body);
             color: var(--text-main);
             font-family: 'Inter', sans-serif;
-            padding-top: 80px;
-            transition: background 0.3s ease;
+            padding-top: 90px;
+            transition: all 0.3s ease;
         }
 
-        /* Navbar Style "Glassmorphism" */
+        /* Navbar "Glass" dynamique */
         .navbar {
-            background: rgba(11, 14, 20, 0.8) !important;
+            background: var(--bg-navbar) !important;
             backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid var(--border-color);
             padding: 0.8rem 0;
+            transition: all 0.3s ease;
         }
 
         .navbar-brand {
-            font-size: 1.4rem;
-            letter-spacing: -0.5px;
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            color: var(--text-main) !important;
         }
 
         .nav-link {
             font-size: 0.9rem;
-            font-weight: 500;
+            font-weight: 600;
             color: var(--text-muted) !important;
             transition: color 0.2s;
         }
 
-        .nav-link:hover {
+        .nav-link:hover, .nav-link.active {
             color: var(--accent-blue) !important;
         }
 
-        /* Boutons Compacts */
+        /* Bouton Switch Thème */
+        .theme-toggle {
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(var(--accent-blue), 0.1);
+            color: var(--accent-blue);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+        .theme-toggle:hover {
+            transform: rotate(15deg) scale(1.1);
+            background: var(--accent-blue);
+            color: white;
+        }
+
+        /* Boutons Authentification */
         .btn-auth {
             font-size: 0.85rem;
-            font-weight: 600;
-            border-radius: 8px;
-            padding: 0.5rem 1.2rem;
+            font-weight: 700;
+            border-radius: 10px;
+            padding: 0.6rem 1.4rem;
             transition: all 0.2s ease;
         }
 
         .btn-primary-custom {
             background-color: var(--accent-blue);
             border: none;
-            color: white;
+            color: white !important;
         }
 
         .btn-primary-custom:hover {
             background-color: #0284c7;
+            box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
             transform: translateY(-1px);
         }
 
-        /* Footer Discret */
-        /* Footer Premium & Lisible */
+        /* Footer Stylisé */
         footer {
-            border-top: 1px solid rgba(255, 255, 255, 0.1); /* Ligne plus visible */
-            background-color: rgba(0, 0, 0, 0.2); /* Un fond très légèrement différent */
-            color: #ffffff !important; /* Force le blanc pour la lisibilité */
+            border-top: 1px solid var(--border-color);
+            background-color: var(--bg-navbar);
+            margin-top: 80px;
         }
 
         .footer-brand {
@@ -82,20 +119,19 @@
             font-weight: 800;
         }
 
-        .footer-text-secondary {
-            color: var(--text-muted);
-            opacity: 0.9; /* Augmentation de l'opacité (avant c'était 0.5) */
-            font-size: 0.8rem;
-        }
-
-        /* Animation des blocs */
-        .fade-in {
-            animation: fadeIn 0.5s ease-in;
-        }
-
+        /* Animation */
+        .fade-in { animation: fadeIn 0.6s ease-out; }
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+
+        body.light-mode .nav-link {
+            color: #1e293b !important; /* Force un gris foncé pour le mode clair */
+        }
+
+        body.light-mode .navbar-brand {
+            color: #1e293b !important;
         }
     </style>
 </head>
@@ -103,26 +139,30 @@
     <header>
         <nav class="navbar navbar-dark fixed-top">
             <div class="container">
-                <a class="navbar-brand fw-extrabold" href="{% url 'home' %}">
+                <a class="navbar-brand" href="{% url 'home' %}">
                     <span style="color: var(--accent-blue);">Tech</span>Pulse
                 </a>
                 
-                <div class="d-flex align-items-center gap-2 gap-md-4">
+                <div class="d-flex align-items-center gap-2 gap-md-3">
+                    <div id="theme-switch" class="theme-toggle me-2" title="Changer de mode">
+                        <i class="bi bi-moon-stars-fill" id="theme-icon"></i>
+                    </div>
+
                     {% if user.is_authenticated %}
-                        <a class="nav-link d-none d-sm-block" href="{% url 'my_favorites' %}">
+                        <a class="nav-link d-none d-lg-block" href="{% url 'my_favorites' %}">
                             <i class="bi bi-bookmark-star me-1"></i> Favoris
+                        </a>
+                        <a class="nav-link" href="{% url 'profile' %}">
+                            <i class="bi bi-person-circle text-info"></i> <span class="d-none d-md-inline ms-1">Profil</span>
                         </a>
                         <form action="{% url 'logout' %}" method="post" class="m-0">
                             {% csrf_token %}
-                            <button type="submit" class="btn-auth nav-link border-0 bg-transparent">
-                                <i class="bi bi-box-arrow-right"></i> <span class="d-none d-md-inline">Quitter</span>
+                            <button type="submit" class="btn-auth btn btn-outline-danger border-0">
+                                <i class="bi bi-power"></i>
                             </button>
                         </form>
-                        <a class="nav-link" href="{% url 'profile' %}">
-                            <i class="bi bi-person-circle me-1 text-info"></i> Profil
-                        </a>
                     {% else %}
-                        <a class="nav-link" href="{% url 'login' %}">Connexion</a>
+                        <a class="nav-link d-none d-sm-block" href="{% url 'login' %}">Connexion</a>
                         <a class="btn-auth btn-primary-custom text-decoration-none shadow-sm" href="{% url 'register' %}">Rejoindre</a>
                     {% endif %}
                 </div>
@@ -135,25 +175,47 @@
         {% endblock %}
     </main>
 
-    <footer class="text-center py-5 mt-5">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-md-6">
-                    <p class="mb-2 fw-bold text-white">
-                        <span class="footer-brand">Tech</span>Pulse 
-                        <span class="mx-2 opacity-25">|</span> 
-                        &copy; 2026 Veille Étudiante
-                    </p>
-                    
-                    <p class="footer-text-secondary mb-0">
-                        <i class="bi bi-broadcast text-info me-1"></i> 
-                        Flux d'informations technologiques en temps réel pour les étudiants.
-                    </p>
-                </div>
+    <footer class="py-5">
+        <div class="container text-center">
+            <h4 class="footer-brand mb-3">TechPulse</h4>
+            <p class="fw-bold mb-4" style="color: var(--text-main);">
+                &copy; 2026 Veille Étudiante — <span class="text-info">Innovation & Actualité</span>
+            </p>
+            <div class="d-flex justify-content-center gap-4 fs-4 mb-4">
+                <a href="#" class="text-info opacity-75"><i class="bi bi-github"></i></a>
+                <a href="#" class="text-info opacity-75"><i class="bi bi-twitter-x"></i></a>
+                <a href="#" class="text-info opacity-75"><i class="bi bi-linkedin"></i></a>
             </div>
+            <p class="small opacity-50" style="color: var(--text-muted);">
+                Plateforme optimisée pour la veille technologique académique et professionnelle.
+            </p>
         </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        const themeSwitch = document.getElementById('theme-switch');
+        const themeIcon = document.getElementById('theme-icon');
+        const body = document.body;
+
+        // Vérifier si un thème est déjà enregistré
+        if (localStorage.getItem('theme') === 'light') {
+            body.classList.add('light-mode');
+            themeIcon.classList.replace('bi-moon-stars-fill', 'bi-sun-fill');
+        }
+
+        themeSwitch.addEventListener('click', () => {
+            body.classList.toggle('light-mode');
+            
+            if (body.classList.contains('light-mode')) {
+                themeIcon.classList.replace('bi-moon-stars-fill', 'bi-sun-fill');
+                localStorage.setItem('theme', 'light');
+            } else {
+                themeIcon.classList.replace('bi-sun-fill', 'bi-moon-stars-fill');
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+    </script>
 </body>
 </html>

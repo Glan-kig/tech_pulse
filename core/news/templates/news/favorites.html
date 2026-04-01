@@ -5,65 +5,68 @@
 {% block content %}
 <div class="container py-4">
     <div class="d-flex align-items-center mb-5">
-        <h2 class="fw-bold mb-0 text-white">
-            <i class="bi bi-bookmark-star text-info me-2"></i> Mes Articles Favoris
+        <h2 class="fw-bold mb-0 dynamic-text text-uppercase fs-3" style="letter-spacing: 1px;">
+            <i class="bi bi-bookmark-star text-info me-2 shadow-sm"></i> Bibliothèque Personnelle
         </h2>
-        <div class="flex-grow-1 ms-4 border-bottom border-white opacity-10"></div>
+        <div class="flex-grow-1 ms-4 border-bottom border-info opacity-25"></div>
     </div>
 
     <div class="row g-4">
         {% for favorite in favorites %}
-        <div class="col-md-6">
-            <div class="card h-100 border-0 shadow rounded-4 overflow-hidden" 
-                 style="background: #1a1f26; border: 1px solid rgba(255,255,255,0.1) !important; transition: transform 0.3s ease;">
+        <div class="col-md-6 col-lg-4"> 
+            <div class="card h-100 border-0 shadow-lg rounded-4 overflow-hidden card-favorite dynamic-card">
                 
                 <div class="card-body p-4">
-                    <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
                         <span class="badge rounded-pill px-3 py-2 fw-bold text-uppercase" 
-                              style="background: rgba(14, 165, 233, 0.1); color: #38bdf8; font-size: 0.7rem;">
-                            SAUVEGARDÉ
+                              style="background: rgba(14, 165, 233, 0.1); color: #0ea5e9; font-size: 0.65rem; border: 1px solid rgba(14, 165, 233, 0.2);">
+                            ARCHIVÉ
                         </span>
+                        <form action="{% url 'add_favorite' favorite.article.id %}" method="post" class="m-0">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-link text-danger p-0 opacity-50 hover-danger" title="Retirer des favoris">
+                                <i class="bi bi-x-circle fs-5"></i>
+                            </button>
+                        </form>
                     </div>
 
-                    <h4 class="card-title fw-bold text-white mb-2" style="line-height: 1.4;">
+                    <h5 class="card-title fw-bold dynamic-text mb-3" style="line-height: 1.4; min-height: 3em;">
                         {{ favorite.article.title }}
-                    </h4>
+                    </h5>
                     
-                    <p class="mb-4 text-light opacity-75 small fw-medium">
-                        <i class="bi bi-clock-history text-info me-1"></i> Ajouté le {{ favorite.added_at|date:"d F Y" }}
+                    <p class="mb-4 dynamic-text fw-bold small">
+                        <i class="bi bi-calendar-check text-info me-1"></i> Ajouté le {{ favorite.added_at|date:"d M Y" }}
                     </p>
 
-                    <div class="p-3 rounded-3" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);">
-                        <p class="fw-bold text-info mb-2 small text-uppercase" style="letter-spacing: 1px; font-size: 0.7rem;">
-                            Accéder aux sources :
+                    <div class="p-3 rounded-3 dynamic-sub-bg border border-secondary border-opacity-10">
+                        <p class="fw-bold text-info mb-2 small text-uppercase" style="letter-spacing: 0.5px; font-size: 0.65rem;">
+                            <i class="bi bi-share me-1"></i> Sources enregistrées :
                         </p>
-                        <ul class="list-unstyled mb-0">
+                        <div class="d-flex flex-wrap gap-2">
                             {% for source in favorite.article.sources.all %}
-                                <li class="text-truncate py-1">
-                                    <a href="{{ source.url }}" class="text-white opacity-75 hover-link text-decoration-none small" target="_blank">
-                                        <i class="bi bi-link-45deg"></i> {{ source.site_name }}
-                                        <i class="bi bi-box-arrow-up-right ms-1" style="font-size: 0.6rem;"></i>
-                                    </a>
-                                </li>
+                                <a href="{{ source.url }}" class="badge text-decoration-none border border-secondary dynamic-muted hover-link-source py-1 px-2" target="_blank" style="font-size: 0.7rem;">
+                                    {{ source.site_name }}
+                                </a>
                             {% endfor %}
-                        </ul>
+                        </div>
                     </div>
                 </div>
 
-                <div class="card-footer bg-transparent border-0 p-4 pt-0 text-end">
-                    <a href="{{ favorite.article.sources.first.url }}" class="btn btn-outline-light btn-sm rounded-pill px-3 me-2 border-opacity-25" style="font-size: 0.8rem;">
-                        Lire l'article
+                <div class="card-footer bg-transparent border-top border-secondary border-opacity-10 p-4 pt-0 text-end">
+                    <a href="{% url 'article_detail' favorite.article.pk %}" class="btn btn-info btn-sm rounded-pill px-4 fw-bold text-dark">
+                        Ouvrir l'article
                     </a>
-                    </div>
+                </div>
             </div>
         </div>
         {% empty %}
         <div class="col-12 text-center py-5">
-            <div class="py-5 bg-dark rounded-4 border border-secondary border-opacity-10 shadow-sm">
-                <i class="bi bi-bookmark-plus text-muted fs-1"></i>
-                <p class="text-white opacity-50 fs-5 mt-3">Votre bibliothèque est vide.</p>
-                <a href="{% url 'home' %}" class="btn btn-primary-custom btn-auth mt-2">
-                    Parcourir les actualités
+            <div class="py-5 rounded-4 border border-info border-opacity-10 shadow-lg dynamic-card">
+                <i class="bi bi-bookmark-x text-info opacity-25 display-1 mb-3"></i>
+                <h3 class="dynamic-text fw-bold">Bibliothèque vide</h3>
+                <p class="dynamic-muted mb-4">Vous n'avez pas encore sauvegardé d'innovations.</p>
+                <a href="{% url 'home' %}" class="btn btn-info rounded-pill px-5 fw-bold text-dark shadow-glow">
+                    Explorer le Flux
                 </a>
             </div>
         </div>
@@ -72,14 +75,51 @@
 </div>
 
 <style>
-    .card:hover {
-        transform: translateY(-5px);
-        background: #242b36 !important;
+    /* Intégration des variables système */
+    .dynamic-card {
+        background-color: var(--card-bg) !important;
+        border: 1px solid var(--border-color) !important;
+    }
+    .dynamic-text { color: var(--text-main) !important; }
+    .dynamic-muted { color: var(--text-muted) !important; }
+
+    .dynamic-sub-bg {
+        background-color: rgba(14, 165, 233, 0.05) !important;
+    }
+    body.light-mode .dynamic-sub-bg {
+        background-color: #f1f5f9 !important;
+    }
+
+    /* Animation et Hover des cartes */
+    .card-favorite {
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    
+    .card-favorite:hover {
+        transform: translateY(-8px);
+        border-color: #0ea5e9 !important;
+        box-shadow: 0 15px 30px rgba(0,0,0,0.2) !important;
+    }
+
+    /* Ajustement de l'ombre en mode sombre */
+    body:not(.light-mode) .card-favorite:hover {
+        background: #1e293b !important;
+        box-shadow: 0 15px 30px rgba(0,0,0,0.6) !important;
+    }
+
+    .hover-link-source:hover {
+        background: #0ea5e9 !important;
+        color: white !important;
         border-color: #0ea5e9 !important;
     }
-    .hover-link:hover {
+
+    .hover-danger:hover {
+        color: #ef4444 !important;
         opacity: 1 !important;
-        color: #0ea5e9 !important;
+    }
+
+    .shadow-glow {
+        box-shadow: 0 0 15px rgba(14, 165, 233, 0.4);
     }
 </style>
 {% endblock %}

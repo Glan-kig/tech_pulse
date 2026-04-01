@@ -7,31 +7,32 @@
     <div class="row g-4 justify-content-center">
         
         <div class="col-lg-4">
-            <div class="card border-0 shadow-lg rounded-4 text-center" 
-                 style="background: #1a1f26; border: 1px solid rgba(255,255,255,0.2) !important;">
-                <div class="card-body p-4">
-                    <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3 shadow" 
-                         style="width: 80px; height: 80px; background: #0ea5e9; font-size: 2.2rem; color: #ffffff; font-weight: 800; border: 3px solid rgba(255,255,255,0.1);">
+            <div class="card border-0 shadow-lg rounded-4 text-center h-100 dynamic-card">
+                <div class="card-body p-4 p-xl-5">
+                    <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-4 profile-avatar-glow" 
+                         style="width: 100px; height: 100px; background: #0ea5e9; font-size: 2.8rem; color: #000; font-weight: 800; border: 4px solid var(--border-color);">
                         {{ user.username|first|upper }}
                     </div>
                     
-                    <h2 class="text-white fw-bold mb-1" style="font-size: 1.8rem;">{{ user.username }}</h2>
-                    <p class="text-info fw-medium mb-4" style="font-size: 1rem;">{{ user.email }}</p>
+                    <h2 class="dynamic-text fw-bold mb-1 text-uppercase" style="letter-spacing: 1px;">{{ user.username }}</h2>
+                    <p class="text-info fw-bold small mb-4 px-2 py-1 rounded" style="background: rgba(14, 165, 233, 0.1); display: inline-block;">
+                        <i class="bi bi-envelope me-1"></i> {{ user.email }}
+                    </p>
                     
-                    <div class="row g-0 py-3 border-top border-bottom border-white border-opacity-10 mb-4">
-                        <div class="col-6 border-end border-white border-opacity-10">
-                            <h4 class="text-white fw-bold mb-0">{{ fav_count }}</h4>
-                            <small class="text-light fw-bold text-uppercase tracking-widest" style="font-size: 0.7rem; opacity: 0.9;">Favoris</small>
+                    <div class="row g-0 py-4 border-top border-bottom border-secondary border-opacity-25 mb-4 mt-2">
+                        <div class="col-6 border-end border-secondary border-opacity-25">
+                            <h3 class="dynamic-text fw-bold mb-0">{{ fav_count }}</h3>
+                            <small class="text-info fw-bold text-uppercase" style="font-size: 0.65rem; letter-spacing: 1px;">Favoris</small>
                         </div>
                         <div class="col-6">
-                            <h4 class="text-white fw-bold mb-0">{{ user.date_joined|date:"M Y" }}</h4>
-                            <small class="text-light fw-bold text-uppercase tracking-widest" style="font-size: 0.7rem; opacity: 0.9;">Membre</small>
+                            <h3 class="dynamic-text fw-bold mb-0">{{ user.date_joined|date:"M Y" }}</h3>
+                            <small class="text-info fw-bold text-uppercase" style="font-size: 0.65rem; letter-spacing: 1px;">Actif depuis</small>
                         </div>
                     </div>
 
                     <div class="d-grid gap-2">
-                        <a href="{% url 'password_change' %}" class="btn btn-outline-info btn-sm rounded-pill py-2 fw-bold shadow-sm">
-                            <i class="bi bi-shield-lock me-2"></i>Changer le mot de passe
+                        <a href="{% url 'password_change' %}" class="btn btn-outline-info btn-sm rounded-pill py-2 fw-bold transition-all shadow-sm">
+                            <i class="bi bi-shield-lock me-2"></i>SÉCURITÉ DU COMPTE
                         </a>
                     </div>
                 </div>
@@ -39,42 +40,48 @@
         </div>
 
         <div class="col-lg-6">
-            <div class="card border-0 shadow-lg rounded-4 h-100" 
-                 style="background: #1a1f26; border: 1px solid rgba(255,255,255,0.1) !important;">
-                <div class="card-header bg-transparent border-bottom border-white border-opacity-10 p-4">
-                    <h4 class="text-white fw-bold mb-0">
-                        <i class="bi bi-clock-history text-info me-2"></i>Derniers sauvegardés
+            <div class="card border-0 shadow-lg rounded-4 h-100 dynamic-card">
+                <div class="card-header bg-transparent border-bottom border-secondary border-opacity-25 p-4">
+                    <h4 class="dynamic-text fw-bold mb-0 fs-5 text-uppercase" style="letter-spacing: 1px;">
+                        <i class="bi bi-clock-history text-info me-2"></i>Derniers enregistrements
                     </h4>
                 </div>
                 
                 <div class="card-body p-0">
-                    <ul class="list-group list-group-flush">
+                    <div class="list-group list-group-flush">
                         {% for fav in recent_fav %}
-                            <li class="list-group-item bg-transparent border-white border-opacity-10 p-4 transition-all hover-dark-light">
-                                <div class="mb-2">
-                                    <a href="{{ fav.article.sources.first.url }}" class="text-white text-decoration-none fw-bold fs-5 d-block hover-blue" target="_blank">
-                                        {{ fav.article.title|truncatechars:65 }}
-                                    </a>
+                            <div class="list-group-item bg-transparent border-secondary border-opacity-10 p-4 transition-all fav-item-hover">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div class="flex-grow-1">
+                                        <a href="{% url 'article_detail' fav.article.pk %}" class="dynamic-text text-decoration-none fw-bold fs-5 d-block mb-2 hover-cyan transition-all">
+                                            {{ fav.article.title|truncatechars:60 }}
+                                        </a>
+                                        <div class="d-flex align-items-center">
+                                            <span class="badge bg-dark-subtle text-info border border-info border-opacity-25 me-3" style="font-size: 0.7rem;">
+                                                {{ fav.article.category.name }}
+                                            </span>
+                                            <span class="dynamic-text fw-bold" style="font-size: 0.8rem;">
+                                                <i class="bi bi-calendar-check text-info me-1"></i> {{ fav.added_at|date:"d M Y" }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <i class="bi bi-chevron-right text-secondary opacity-50 ms-3 mt-2"></i>
                                 </div>
-                                <div class="d-flex align-items-center">
-                                    <span class="text-light fw-medium" style="font-size: 0.85rem; opacity: 0.8;">
-                                        <i class="bi bi-calendar-event text-info me-1"></i> Sauvegardé il y a {{ fav.added_at|timesince }}
-                                    </span>
-                                </div>
-                            </li>
+                            </div>
                         {% empty %}
-                            <li class="list-group-item bg-transparent text-center py-5">
-                                <p class="text-white opacity-50 fs-5">Aucun favori pour le moment.</p>
-                                <a href="{% url 'home' %}" class="btn btn-primary-custom btn-auth mt-3">Explorer les news</a>
-                            </li>
+                            <div class="text-center py-5">
+                                <i class="bi bi-bookmark-x text-secondary display-4 opacity-25"></i>
+                                <p class="dynamic-text opacity-50 mt-3">Aucun favori détecté sur ce profil.</p>
+                                <a href="{% url 'home' %}" class="btn btn-info btn-sm rounded-pill px-4 fw-bold text-dark">LANCER L'EXPLORATION</a>
+                            </div>
                         {% endfor %}
-                    </ul>
+                    </div>
                 </div>
 
                 {% if recent_fav %}
-                <div class="card-footer bg-transparent border-0 p-4 text-center">
-                    <a href="{% url 'my_favorites' %}" class="btn btn-link text-info fw-bold text-decoration-none hover-underline">
-                        Gérer tous mes favoris <i class="bi bi-arrow-right-short fs-4 align-middle"></i>
+                <div class="card-footer bg-transparent border-0 p-4 text-center border-top border-secondary border-opacity-10">
+                    <a href="{% url 'my_favorites' %}" class="text-info fw-bold text-decoration-none hover-underline small text-uppercase" style="letter-spacing: 1px;">
+                        Voir l'archive complète <i class="bi bi-arrow-right-circle ms-2"></i>
                     </a>
                 </div>
                 {% endif %}
@@ -85,25 +92,50 @@
 </div>
 
 <style>
-    /* Amélioration visuelle globale */
-    .text-light { color: #f1f5f9 !important; }
-    .text-info { color: #38bdf8 !important; }
-    
-    .hover-dark-light:hover {
-        background: rgba(255, 255, 255, 0.05) !important;
+    /* Utilisation des variables globales */
+    .dynamic-card {
+        background-color: var(--card-bg) !important;
+        border: 1px solid var(--border-color) !important;
+    }
+    .dynamic-text { color: var(--text-main) !important; }
+
+    /* Effet Avatar Glow */
+    .profile-avatar-glow {
+        box-shadow: 0 0 20px rgba(14, 165, 233, 0.4);
+        transition: all 0.3s ease;
     }
     
-    .hover-blue:hover {
-        color: #38bdf8 !important;
+    .profile-avatar-glow:hover {
+        box-shadow: 0 0 30px rgba(14, 165, 233, 0.6);
+        transform: scale(1.05);
+    }
+
+    /* Style des items de la liste */
+    .fav-item-hover {
+        border-left: 4px solid transparent !important;
+        cursor: pointer;
+    }
+    
+    .fav-item-hover:hover {
+        background: rgba(14, 165, 233, 0.05) !important;
+        border-left: 4px solid #0ea5e9 !important;
+    }
+
+    /* Mode clair spécifique pour le hover de liste */
+    body.light-mode .fav-item-hover:hover {
+        background: rgba(0, 0, 0, 0.02) !important;
+    }
+
+    .hover-cyan:hover {
+        color: #0ea5e9 !important;
+        padding-left: 5px;
     }
     
     .hover-underline:hover {
-        text-decoration: underline !important;
+        color: var(--accent-blue) !important;
         opacity: 1;
     }
 
-    .tracking-widest { letter-spacing: 0.15em; }
-    
-    .transition-all { transition: all 0.3s ease; }
+    .transition-all { transition: all 0.25s ease-in-out; }
 </style>
 {% endblock %}

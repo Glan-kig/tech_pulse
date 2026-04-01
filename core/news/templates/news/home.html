@@ -6,94 +6,97 @@
 <div class="container py-4">
     <div class="row justify-content-center mb-5">
         <div class="col-lg-10">
-            <form action="." method="get" class="p-2 rounded-4 shadow-lg d-flex align-items-center" 
-                  style="background: #1a1f26; border: 1px solid rgba(14, 165, 233, 0.2);">
+            <form action="." method="get" class="p-2 rounded-4 shadow-lg d-flex align-items-center search-bar-container dynamic-card">
                 <div class="flex-grow-1 px-3 d-flex align-items-center border-end border-secondary border-opacity-25">
                     <i class="bi bi-search text-info me-2"></i>
-                    <input type="text" name="q" class="form-control bg-transparent border-0 shadow-none text-white fw-medium" 
-                           placeholder="Rechercher une innovation..." value="{{ request.GET.q }}">
+                    <input type="text" name="q" class="form-control bg-transparent border-0 shadow-none dynamic-text fw-bold py-2 search-input" 
+                        placeholder="Rechercher une innovation..." value="{{ request.GET.q }}">
                 </div>
                 <div class="px-3 d-none d-md-block border-end border-secondary border-opacity-25">
-                    <select name="category" class="form-select border-0 shadow-none bg-transparent text-white fw-semibold" 
-                            style="width: 180px; cursor: pointer;">
-                        <option value="" class="bg-dark text-white">Toutes catégories</option>
+                    <select name="category" class="form-select border-0 shadow-none bg-transparent dynamic-text fw-bold" 
+                        style="width: 190px; cursor: pointer;">
+                        <option value="" class="dynamic-option">Toutes catégories</option>
                         {% for category in categories %}
-                            <option value="{{ category.id }}" class="bg-dark text-white" 
-                                    {% if request.GET.category == category.id|stringformat:"i" %}selected{% endif %}>
-                                {{ category.name }}
+                            <option value="{{ category.id }}" class="dynamic-option" 
+                                {% if request.GET.category == category.id|stringformat:"i" %}selected{% endif %}>
+                                    {{ category.name }}
                             </option>
                         {% endfor %}
                     </select>
                 </div>
-                <button type="submit" class="btn btn-info rounded-pill px-4 ms-2 shadow fw-bold text-white">
-                    Explorer
+                <button type="submit" class="btn btn-info rounded-pill px-4 ms-2 shadow fw-bold text-dark">
+                    EXPLORER
                 </button>
             </form>
         </div>
     </div>
 
     <div class="d-flex align-items-center mb-4">
-        <h2 class="fw-bold mb-0 text-white" style="letter-spacing: -0.5px;">Dernières Nouvelles</h2>
-        <div class="flex-grow-1 ms-4 border-bottom border-white opacity-10"></div>
+        <h2 class="fw-bold mb-0 dynamic-text text-uppercase fs-4" style="letter-spacing: 1px;">
+            <i class="bi bi-cpu text-info me-2"></i>Dernières Nouvelles
+        </h2>
+        <div class="flex-grow-1 ms-4 border-bottom border-secondary opacity-25"></div>
     </div>
 
     <div class="row g-4"> 
         {% for article in page_obj %}
-        <div class="col-md-6"> 
-            <div class="card h-100 border-0 shadow rounded-4 overflow-hidden card-premium" 
-                 style="background: #1a1f26; border: 1px solid rgba(255,255,255,0.05) !important;">
+        <div class="col-md-6 col-xl-4"> 
+            <div class="card h-100 border-0 shadow rounded-4 overflow-hidden card-premium dynamic-card">
                 
                 <div class="card-body p-4"> 
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <span class="badge rounded-pill px-3 py-2 fw-bold text-uppercase" 
-                              style="background: rgba(14, 165, 233, 0.15); color: #38bdf8; font-size: 0.7rem;">
+                              style="background: rgba(14, 165, 233, 0.1); color: #0ea5e9; font-size: 0.65rem; border: 1px solid rgba(14, 165, 233, 0.2);">
                             {{ article.category.name }}
                         </span>
-                        {% if article.is_new %}
-                            <span class="badge bg-danger rounded-pill px-2 py-1 shadow-sm" style="font-size: 0.7rem;">NOUVEAU</span>
-                        {% endif %}
+                        <div class="d-flex gap-1">
+                            {% if article.ai_summary %}
+                                <span class="badge bg-info text-dark rounded-pill px-2 py-1" style="font-size: 0.65rem;"><i class="bi bi-robot"></i> IA</span>
+                            {% endif %}
+                            {% if article.is_new %}
+                                <span class="badge bg-danger rounded-pill px-2 py-1" style="font-size: 0.65rem;">NEW</span>
+                            {% endif %}
+                        </div>
                     </div>
 
-                    <h3 class="card-title fw-bold text-white mb-3" style="line-height: 1.3; font-size: 1.4rem;">
+                    <h3 class="card-title fw-bold dynamic-text mb-3 h5" style="line-height: 1.4;">
                         {{ article.title }}
                     </h3>
                     
-                    <p class="card-text mb-4" style="color: #94a3b8; font-size: 0.95rem; line-height: 1.6;">
-                        {{ article.content|truncatewords:25 }}
+                    <p class="card-text mb-4 dynamic-muted" style="font-size: 0.9rem; line-height: 1.6;">
+                        {{ article.content|truncatewords:20 }}
                     </p>
 
-                    <div class="p-3 rounded-3 mb-3" style="background: rgba(15, 23, 42, 0.5); border: 1px solid rgba(255,255,255,0.05);">
-                        <p class="fw-bold text-info mb-2 small text-uppercase" style="letter-spacing: 1px; font-size: 0.7rem;">
-                            <i class="bi bi-link-45deg"></i> Sources ({{ article.sources.count }})
+                    <div class="p-3 rounded-3 mb-2 dynamic-sub-bg border border-secondary border-opacity-10">
+                        <p class="fw-bold text-info mb-2 small text-uppercase" style="letter-spacing: 0.5px; font-size: 0.65rem;">
+                            <i class="bi bi-hdd-network me-1"></i> Flux sources :
                         </p>
-                        <ul class="list-unstyled mb-0">
+                        <div class="d-flex flex-wrap gap-2">
                             {% for source in article.sources.all|slice:":2" %}
-                                <li class="text-truncate py-1" style="font-size: 0.85rem;">
-                                    <a href="{{ source.url }}" class="text-white opacity-75 hover-link text-decoration-none" target="_blank">
-                                        {{ source.site_name }} <i class="bi bi-box-arrow-up-right ms-1" style="font-size: 0.6rem;"></i>
-                                    </a>
-                                </li>
+                                <a href="{{ source.url }}" class="badge text-decoration-none border border-secondary dynamic-muted hover-link-source py-1 px-2" target="_blank" style="font-size: 0.75rem;">
+                                    {{ source.site_name }}
+                                </a>
                             {% endfor %}
-                        </ul>
+                        </div>
                     </div>
                 </div>
 
-                <div class="card-footer bg-transparent border-0 p-4 pt-0 d-flex justify-content-between align-items-center">
-                    <span class="text-light opacity-50" style="font-size: 0.85rem;">
+                <div class="card-footer bg-transparent border-top border-secondary border-opacity-10 p-4 pt-0 d-flex justify-content-between align-items-center">
+                    <span class="dynamic-text fw-bold" style="font-size: 0.85rem;">
                         <i class="bi bi-calendar3 text-info me-2"></i> {{ article.created_at|date:"d M Y" }}
                     </span>
-                    
+    
                     <div class="d-flex gap-2">
                         {% if user.is_authenticated %}
                             <form action="{% url 'add_favorite' article.id %}" method="post" class="m-0">
                                 {% csrf_token %}
-                                <button type="submit" class="btn btn-outline-light btn-sm rounded-pill opacity-75">
-                                    <i class="bi bi-bookmark"></i>
+                                <button type="submit" class="btn btn-link text-info p-0 hover-white">
+                                    <i class="bi bi-bookmark-plus fs-5"></i>
                                 </button>
                             </form>
                         {% endif %}
-                        <a href="{% url 'article_detail' article.pk %}" class="btn btn-info btn-sm rounded-pill px-3 fw-bold text-white">
-                            Laisser un commentaire
+                        <a href="{% url 'article_detail' article.pk %}" class="btn btn-outline-info btn-sm rounded-pill px-3 fw-bold">
+                            Détails <i class="bi bi-chevron-right ms-1"></i>
                         </a>
                     </div>
                 </div>
@@ -101,8 +104,8 @@
         </div>
         {% empty %}
         <div class="col-12 text-center py-5">
-            <i class="bi bi- search fs-1 text-muted opacity-25"></i>
-            <p class="text-white opacity-50 fs-4 mt-3">Aucun article ne correspond à votre recherche.</p>
+            <i class="bi bi-cloud-slash fs-1 text-info opacity-25"></i>
+            <p class="dynamic-text opacity-50 fs-5 mt-3">Aucun résultat dans la base de données.</p>
         </div>
         {% endfor %}
     </div>
@@ -111,51 +114,107 @@
     <nav aria-label="Page navigation" class="mt-5">
         <ul class="pagination justify-content-center">
             {% if page_obj.has_previous %}
-                <li class="page-item"><a class="page-link bg-dark border-secondary text-info" href="?page=1">&laquo;</a></li>
-                <li class="page-item"><a class="page-link bg-dark border-secondary text-info" href="?page={{ page_obj.previous_page_number }}">Précédent</a></li>
+                <li class="page-item"><a class="page-link custom-page-link" href="?page={{ page_obj.previous_page_number }}"><i class="bi bi-arrow-left"></i></a></li>
             {% endif %}
-            
-            <li class="page-item disabled">
-                <span class="page-link bg-info border-info text-white fw-bold">
-                    {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
-                </span>
+            <li class="page-item active">
+                <span class="page-link custom-page-link-active">{{ page_obj.number }}</span>
             </li>
-
             {% if page_obj.has_next %}
-                <li class="page-item"><a class="page-link bg-dark border-secondary text-info" href="?page={{ page_obj.next_page_number }}">Suivant</a></li>
-                <li class="page-item"><a class="page-link bg-dark border-secondary text-info" href="?page={{ page_obj.paginator.num_pages }}">&raquo;</a></li>
+                <li class="page-item"><a class="page-link custom-page-link" href="?page={{ page_obj.next_page_number }}"><i class="bi bi-arrow-right"></i></a></li>
             {% endif %}
         </ul>
     </nav>
     {% endif %}
 
-    <div class="mt-5 p-4 rounded-4" style="background: #1a1f26; border: 1px solid rgba(14, 165, 233, 0.1);">
-        <h4 class="text-white fw-bold mb-3"><i class="bi bi-chat-dots text-info me-2"></i>Dernières réactions</h4>
+    <div class="mt-5 p-4 rounded-4 dynamic-card border border-secondary border-opacity-10">
+        <h5 class="dynamic-text fw-bold mb-4"><i class="bi bi-chat-left-dots text-info me-2"></i>RETOUR RÉSEAU</h5>
         <div class="row">
             {% for comment in recent_comments %}
             <div class="col-md-4 mb-3">
-                <div class="p-3 rounded-3" style="background: rgba(255,255,255,0.03);">
-                    <small class="text-info fw-bold">{{ comment.author.username }}</small>
-                    <p class="text-light small mb-0 opacity-75">{{ comment.content|truncatewords:8 }}</p>
-                    <a href="{% url 'article_detail' comment.article.pk %}" class="very-small text-decoration-none opacity-50">Sur : {{ comment.article.title|truncatechars:20 }}</a>
+                <div class="p-3 rounded-3 h-100 dynamic-sub-bg" style="border-left: 3px solid #0ea5e9;">
+                    <div class="d-flex justify-content-between mb-1">
+                        <small class="text-info fw-bold">{{ comment.author.username }}</small>
+                        <small class="dynamic-muted very-small">{{ comment.created_at|timesince }}</small>
+                    </div>
+                    <p class="dynamic-text small mb-2">"{{ comment.content|truncatewords:8 }}"</p>
+                    <a href="{% url 'article_detail' comment.article.pk %}" class="very-small text-decoration-none text-info opacity-75 hover-white">→ {{ comment.article.title|truncatechars:25 }}</a>
                 </div>
             </div>
             {% empty %}
-            <p class="text-muted small ms-3">Pas encore de commentaires.</p>
+            <p class="dynamic-muted small ms-3 fst-italic">Silence radio sur le réseau...</p>
             {% endfor %}
         </div>
     </div>
 </div>
 
 <style>
-    .card-premium { transition: all 0.3s ease; }
-    .card-premium:hover {
-        transform: translateY(-5px);
-        border-color: #0ea5e9 !important;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
+    /* Utilisation des variables CSS de base.html */
+    .dynamic-card {
+        background-color: var(--card-bg) !important;
+        border: 1px solid var(--border-color) !important;
     }
-    .page-link { border: none !important; margin: 0 3px; border-radius: 8px !important; }
-    .hover-link:hover { color: #0ea5e9 !important; opacity: 1 !important; }
-    .very-small { font-size: 0.7rem; color: #38bdf8; }
+    
+    .dynamic-sub-bg {
+        background-color: rgba(var(--accent-blue-rgb, 14, 165, 233), 0.05) !important;
+    }
+
+    /* Support du mode clair pour les fonds de sous-section */
+    body.light-mode .dynamic-sub-bg {
+        background-color: #f1f5f9 !important;
+    }
+
+    .dynamic-text { color: var(--text-main) !important; }
+    .dynamic-muted { color: var(--text-muted) !important; }
+
+    .dynamic-option {
+        background-color: var(--card-bg);
+        color: var(--text-main);
+    }
+
+    /* Effets de survol */
+    .card-premium { transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    .card-premium:hover {
+        transform: translateY(-8px);
+        border-color: #0ea5e9 !important;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.2) !important;
+    }
+
+    body:not(.light-mode) .card-premium:hover {
+        box-shadow: 0 15px 35px rgba(0,0,0,0.6) !important;
+    }
+
+    .custom-page-link {
+        background: var(--card-bg) !important;
+        border: 1px solid var(--border-color) !important;
+        color: #0ea5e9 !important;
+        padding: 10px 18px;
+        border-radius: 10px !important;
+        margin: 0 5px;
+    }
+
+    .custom-page-link-active {
+        background: #0ea5e9 !important;
+        color: white !important;
+        border: 1px solid #0ea5e9 !important;
+        padding: 10px 18px;
+        border-radius: 10px !important;
+        font-weight: bold;
+    }
+
+    .hover-link-source:hover {
+        background: #0ea5e9 !important;
+        color: white !important;
+        border-color: #0ea5e9 !important;
+    }
+
+    /* Correction des inputs pour le mode clair */
+    .search-input { color: var(--text-main) !important; }
+    .search-input::placeholder { color: var(--text-muted) !important; opacity: 0.7 !important; }
+
+    @media (max-width: 768px) {
+        .search-bar-container { flex-direction: column; align-items: stretch !important; }
+        .btn-info { margin: 10px 0 0 0 !important; width: 100%; }
+        .border-end { border: none !important; border-bottom: 1px solid var(--border-color) !important; }
+    }
 </style>
 {% endblock %}
