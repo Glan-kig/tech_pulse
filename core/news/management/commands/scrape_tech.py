@@ -8,7 +8,7 @@ class Command(BaseCommand):
     help = "Recupere les dernières news de plusieurs sources tech"
 
     def handle(self, *args, **options):
-        # Configuration des sources (Inchangée)
+        # Configuration des sources (URLs mises à jour)
         SOURCE_CONFIG = [
             {"site_name": "Le Monde Informatique", "url": "https://www.lemondeinformatique.fr/flux-rss/thematique/toute-l-actualite/rss.xml"},
             {"site_name": "L'Informatique", "url": "https://www.linformatique.com/flux-rss/"},
@@ -26,55 +26,70 @@ class Command(BaseCommand):
             {"site_name": "Linux.fr", "url": "https://linuxfr.org/news.atom"}
         ]
 
-        headers = { 
-            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36' 
-        }
+        headers = { 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36' }
+
+        # Liste de mots-clés à ignorer absolument (Gaming, Culture Pop, etc.)
+        BLACKLIST = [
+            "wow", "world of warcraft", "one piece", "anime", "manga", "film", "série", 
+            "netflix", "disney+", "jeu vidéo", "ps5", "xbox", "nintendo", "booster", 
+            "parasite", "reacher", "acteur", "cinéma", "gaming", "zelda", "elden ring"
+        ]
 
         CATEGORY_MAP = {
-            "Intelligence Artificielle": ["ia", "ai", "chatgpt", "machine learning", "openai"],
-            "Cybersécurité": ["hack", "faille", "sécurité", "cyber", "ransomware", "virus"],
-            "Développement": ["python", "java", "code", "dev", "framework", "django", "next.js", "github"],
-            "Hardware": ["processeur", "nvidia", "intel", "carte graphique", "smartphone", "iphone"],
-            "Architecture Cloud": ["cloud", "aws", "azure", "gcp", "kubernetes", "docker"],
+            "Intelligence Artificielle": ["ia", "ai", "chatgpt", "machine learning", "openai", "claude", "anthropic", "llm"],
+            "Cybersécurité": ["hack", "faille", "sécurité", "cyber", "ransomware", "virus", "phishing", "kaspersky"],
+            "Développement": ["python", "java", "code", "dev", "framework", "django", "next.js", "github", "rust", "kotlin"],
+            "Hardware": ["processeur", "nvidia", "intel", "carte graphique", "smartphone", "iphone", "macbook", "composant"],
+            "Architecture Cloud": ["cloud", "aws", "azure", "gcp", "kubernetes", "docker", "serverless"],
             "Architecture Logicielle": ["microservices", "architecture", "design pattern", "scalabilité", "performance"],
-            "Réseaux et Télécoms": ["5g", "réseau", "télécom", "fibre", "wifi", "edge computing"],
-            "Données et Big Data": ["big data", "data", "hadoop", "spark", "analytics", "data lake"],
-            "Blockchain et Cryptomonnaies": ["blockchain", "cryptomonnaie", "bitcoin", "ethereum", "defi", "nft"],
-            "DevOps et CI/CD": ["devops", "ci/cd", "intégration continue", "déploiement continu", "jenkins", "gitlab ci"],
+            "Réseaux et Télécoms": ["5g", "réseau", "télécom", "fibre", "wifi", "starlink"],
+            "Données et Big Data": ["big data", "data", "hadoop", "spark", "analytics", "database", "sql", "nosql"],
+            "Blockchain et Cryptomonnaies": ["blockchain", "cryptomonnaie", "bitcoin", "ethereum", "web3", "crypto"],
+            "DevOps et CI/CD": ["devops", "ci/cd", "jenkins", "gitlab", "terraform", "ansible"],
         }
+
+        def is_blacklisted(text):
+            text = text.lower()
+            return any(word in text for word in BLACKLIST)
 
         def get_category_by_content(text):
             text = text.lower()
             for cat_name, keywords in CATEGORY_MAP.items():
                 if any(kw in text for kw in keywords):
-                    # CORRECTION : Utilisation de get_or_create pour éviter le bug des doublons
                     category, _ = Category.objects.get_or_create(name=cat_name)
                     return category
             
             default_cat, _ = Category.objects.get_or_create(name="Général")
             return default_cat
         
-        # Boucle pour les sources
         for src in SOURCE_CONFIG:
-            time.sleep(1) # Politesse envers les serveurs
+            time.sleep(1.5) # Un peu plus de politesse
             self.stdout.write(f"Scraping de : {src['site_name']}...")
             try:
-                # CORRECTION : Ajout d'un timeout de 30s pour éviter que Numerama ou d'autres bloquent le script
                 response = requests.get(src['url'], headers=headers, timeout=30)
-                response.raise_for_status() # Génère une erreur si le code HTTP n'est pas 200
+                response.raise_for_status()
                 
                 soup = BeautifulSoup(response.content, features="xml")
-                items = soup.find_all('item')
+                items = soup.find_all('item') if soup.find_all('item') else soup.find_all('entry')
 
                 for item in items[:10]:
                     title = item.title.text if item.title else "Sans titre"
-                    link = item.link.text if item.link else ""
-                    description = item.description.text if item.description else ""
+                    # Gestion du format Atom (Linux.fr) où le lien est dans <link href="...">
+                    if item.link and item.link.get('href'):
+                        link = item.link.get('href')
+                    else:
+                        link = item.link.text if item.link else ""
+                    
+                    description = item.description.text if item.description else (item.summary.text if item.summary else "")
+
+                    # FILTRE : On vérifie si l'article est hors-sujet
+                    if is_blacklisted(title + " " + description):
+                        self.stdout.write(self.style.WARNING(f"  [IGNORÉ] {title[:40]}... (Hors-sujet)"))
+                        continue
 
                     if not Article.objects.filter(title=title).exists():
                         category = get_category_by_content(title + " " + description)
 
-                        # Resume IA (On l'entoure aussi d'un try pour que si l'IA plante, l'article soit quand même créé)
                         try:
                             ai_summary = generate_ai_summary(description)
                         except:
@@ -87,20 +102,11 @@ class Command(BaseCommand):
                             category=category
                         )
 
-                        Source.objects.create(
-                            site_name=src['site_name'],
-                            url=link,
-                            article=article
-                        )
-                        
+                        Source.objects.create(site_name=src['site_name'], url=link, article=article)
                         self.stdout.write(self.style.SUCCESS(f"  [OK] {title[:50]}..."))
 
-            except requests.exceptions.RequestException as e:
-                self.stdout.write(self.style.WARNING(f"  [ERREUR RÉSEAU] {src['site_name']} : {e}"))
-                continue # CORRECTION : On passe à la source suivante au lieu d'arrêter le script
-                
             except Exception as e:
-                self.stdout.write(self.style.ERROR(f"  [ERREUR LOGIQUE] {src['site_name']} : {e}"))
-                continue # CORRECTION : On passe à la source suivante
+                self.stdout.write(self.style.ERROR(f"  [ERREUR] {src['site_name']} : {e}"))
+                continue
 
-        self.stdout.write(self.style.SUCCESS("\nFin du scraping multi-sources !"))      
+        self.stdout.write(self.style.SUCCESS("\nNettoyage terminé. TechPulse est à jour !"))     
