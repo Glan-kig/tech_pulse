@@ -1,4 +1,4 @@
-import requests
+import requests, time
 from bs4 import BeautifulSoup
 from django.core.management.base import BaseCommand
 from news.models import Article, Category, Source
@@ -11,19 +11,19 @@ class Command(BaseCommand):
         # Configuration des sources (Inchangée)
         SOURCE_CONFIG = [
             {"site_name": "Le Monde Informatique", "url": "https://www.lemondeinformatique.fr/flux-rss/thematique/toute-l-actualite/rss.xml"},
-            {"site_name": "L'Informatique", "url": "https://www.linformatique.com/rss/actualites.xml"},
-            {"site_name": "ZDNet France", "url": "https://www.zdnet.fr/rss.xml"},
+            {"site_name": "L'Informatique", "url": "https://www.linformatique.com/flux-rss/"},
+            {"site_name": "ZDNet France", "url": "https://www.zdnet.fr/actualites/rss/"},
             {"site_name": "TechCrunch", "url": "https://techcrunch.com/feed/"},
             {"site_name": "The Verge", "url": "https://www.theverge.com/rss/index.xml"},
             {"site_name": "Developpez.com", "url": "https://www.developpez.com/index/rss.php?cat=actualites"},
-            {"site_name": "Clubic", "url": "https://www.clubic.com/rss/actualites-informatique.xml"},
-            {"site_name": "Programmez!", "url": "https://www.programmez.com/rss/actualites.xml"},
+            {"site_name": "Clubic", "url": "https://www.clubic.com/actualites.rss"},
+            {"site_name": "Programmez!", "url": "https://www.programmez.com/rss.xml"},
             {"site_name": "InfoQ (FR/EN)", "url": "https://www.infoq.com/fr/feed/"},
-            {"site_name": "Journal du Net (JDN)", "url": "https://www.journaldunet.com/web-tech/rss.xml"},
+            {"site_name": "Journal du Net (JDN)", "url": "https://www.journaldunet.com/rss/"},
             {"site_name": "Numerama", "url": "https://www.numerama.com/feed"},
-            {"site_name": "LeMagIT", "url": "https://www.lemagit.fr/securite/rss.xml"},
+            {"site_name": "LeMagIT", "url": "https://www.lemagit.fr/rss/RSS-actualites.xml"},
             {"site_name": "Undernews", "url": "https://www.undernews.fr/feed"},
-            {"site_name": "Linux.fr", "url": "https://linuxfr.org/rss/actualites.xml"}
+            {"site_name": "Linux.fr", "url": "https://linuxfr.org/news.atom"}
         ]
 
         headers = { 
@@ -56,10 +56,11 @@ class Command(BaseCommand):
         
         # Boucle pour les sources
         for src in SOURCE_CONFIG:
+            time.sleep(1) # Politesse envers les serveurs
             self.stdout.write(f"Scraping de : {src['site_name']}...")
             try:
-                # CORRECTION : Ajout d'un timeout de 15s pour éviter que Numerama ou d'autres bloquent le script
-                response = requests.get(src['url'], headers=headers, timeout=15)
+                # CORRECTION : Ajout d'un timeout de 30s pour éviter que Numerama ou d'autres bloquent le script
+                response = requests.get(src['url'], headers=headers, timeout=30)
                 response.raise_for_status() # Génère une erreur si le code HTTP n'est pas 200
                 
                 soup = BeautifulSoup(response.content, features="xml")
