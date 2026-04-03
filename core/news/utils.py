@@ -1,4 +1,4 @@
-import openai
+# import openai # A utiliser plus tard 
 import os
 import requests
 import time
