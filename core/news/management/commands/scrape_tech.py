@@ -36,11 +36,11 @@ class Command(BaseCommand):
         ]
 
         CATEGORY_MAP = {
-            "Intelligence Artificielle": ["ia", "ai", "chatgpt", "machine learning", "openai", "claude", "anthropic", "llm"],
-            "Cybersécurité": ["hack", "faille", "sécurité", "cyber", "ransomware", "virus", "phishing", "kaspersky"],
+            "Intelligence Artificielle": ["ia", "ai", "chatgpt", "machine learning", "openai", "claude", "anthropic", "llm", "claudecode"],
+            "Cybersécurité": ["hack", "faille", "sécurité", "cyber", "ransomware", "virus", "phishing", "kaspersky", "incyber", "forum", "anssi", "campus cyber"],
             "Développement": ["python", "java", "code", "dev", "framework", "django", "next.js", "github", "rust", "kotlin"],
             "Hardware": ["processeur", "nvidia", "intel", "carte graphique", "smartphone", "iphone", "macbook", "composant"],
-            "Architecture Cloud": ["cloud", "aws", "azure", "gcp", "kubernetes", "docker", "serverless"],
+            "Architecture Cloud": ["cloud", "aws", "azure", "gcp", "kubernetes", "docker", "serverless", "summit", "aws summit", "lambda", "s3"],
             "Architecture Logicielle": ["microservices", "architecture", "design pattern", "scalabilité", "performance"],
             "Réseaux et Télécoms": ["5g", "réseau", "télécom", "fibre", "wifi", "starlink"],
             "Données et Big Data": ["big data", "data", "hadoop", "spark", "analytics", "database", "sql", "nosql"],
