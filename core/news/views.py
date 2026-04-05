@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import login
+from django.contrib.auth import login, update_session_auth_hash
+from django.contrib import messages
 from django.db.models import Q
 from django.core.paginator import Paginator
 from .models import Article, Category, Favorite, Comment, CommentLike
-from .forms import CommentForm
+from .forms import CommentForm, MyPasswordChangeForm
 
 def home(request):
     query = request.GET.get('q') # Récupération de la requête de recherche depuis les paramètres de la requête
@@ -120,3 +121,20 @@ def like_comment(request, comment_id):
         like.delete()
 
     return redirect('article_detail', pk=comment.article.pk)
+
+@login_required # Seuls les connectés peuvent changer leur mot de passe
+def change_password(request):
+    if request.method == 'POST':
+        form = MyPasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            # IMPORTANT : évite de déconnecter l'utilisateur après le changement
+            update_session_auth_hash(request, user)
+            messages.success(request, 'Votre mot de passe a été mis à jour avec succès !')
+            return redirect('profile') # Ou l'URL de ton choix
+        else:
+            messages.error(request, 'Veuillez corriger les erreurs ci-dessous.')
+    else:
+        form = MyPasswordChangeForm(request.user)
+    
+    return render(request, 'news/change_password.html', {'form': form})
