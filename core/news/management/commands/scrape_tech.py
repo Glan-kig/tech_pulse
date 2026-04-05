@@ -21,18 +21,19 @@ class Command(BaseCommand):
             {"site_name": "InfoQ (FR/EN)", "url": "https://www.infoq.com/fr/feed/"},
             {"site_name": "Journal du Net (JDN)", "url": "https://www.journaldunet.com/rss/"},
             {"site_name": "Numerama", "url": "https://www.numerama.com/feed"},
-            {"site_name": "LeMagIT", "url": "https://www.lemagit.fr/rss/RSS-actualites.xml"},
+            {"site_name": "LeMagIT", "url": "https://www.lemagit.fr/actualites"},
             {"site_name": "Undernews", "url": "https://www.undernews.fr/feed"},
             {"site_name": "Linux.fr", "url": "https://linuxfr.org/news.atom"}
         ]
 
-        headers = { 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36' }
-
+        headers = { 
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        }
         # Liste de mots-clés à ignorer absolument (Gaming, Culture Pop, etc.)
         BLACKLIST = [
             "wow", "world of warcraft", "one piece", "anime", "manga", "film", "série", 
             "netflix", "disney+", "jeu vidéo", "ps5", "xbox", "nintendo", "booster", 
-            "parasite", "reacher", "acteur", "cinéma", "gaming", "zelda", "elden ring"
+            "reacher", "acteur", "cinéma", "gaming", "zelda", "elden ring"
         ]
 
         CATEGORY_MAP = {

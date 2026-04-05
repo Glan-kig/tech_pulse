@@ -10,7 +10,7 @@ class Category(models.Model):
         return self.name
     
 class Article(models.Model):
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=1000)
     summary = models.TextField()
     category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
