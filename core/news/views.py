@@ -62,6 +62,13 @@ def add_favorite(request, article_id):
     return redirect('home')
 
 @login_required
+def remove_from_favorites(request, article_id):
+    favorite = get_object_or_404(Favorite, user=request.user, article_id=article_id)
+    favorite.delete()
+    messages.success(request, f"L'article '{favorite.article.title}' a été retiré de vos favoris.")
+    return redirect('my_favorites')
+
+@login_required
 def my_favorites(request):
     # Récupère les articles favoris de l'utilisateur connecté, triés par date d'ajout décroissante
     user_favorites = Favorite.objects.filter(user=request.user).order_by('-added_at').select_related('article')
