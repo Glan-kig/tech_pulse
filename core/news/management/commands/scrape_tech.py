@@ -73,7 +73,7 @@ class Command(BaseCommand):
                 soup = BeautifulSoup(response.content, features="xml")
                 items = soup.find_all('item') if soup.find_all('item') else soup.find_all('entry')
 
-                for item in items[:10]:
+                for item in items[:5]:
                     title = item.title.text if item.title else "Sans titre"
                     # Gestion du format Atom (Linux.fr) où le lien est dans <link href="...">
                     if item.link and item.link.get('href'):
