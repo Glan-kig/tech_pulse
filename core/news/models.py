@@ -26,7 +26,7 @@ class Article(models.Model):
 class Source(models.Model):
     article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name='sources')
     site_name = models.CharField(max_length=1000)
-    url = models.URLField()
+    url = models.URLField(max_length=2000)
 
     def __str__(self):
         return f"{self.site_name} - {self.article.title}"
