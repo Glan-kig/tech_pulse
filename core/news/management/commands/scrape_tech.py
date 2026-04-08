@@ -23,17 +23,21 @@ class Command(BaseCommand):
             {"site_name": "Numerama", "url": "https://www.numerama.com/feed"},
             {"site_name": "LeMagIT", "url": "https://www.lemagit.fr/actualites"},
             {"site_name": "Undernews", "url": "https://www.undernews.fr/feed"},
-            {"site_name": "Linux.fr", "url": "https://linuxfr.org/news.atom"}
+            #{"site_name": "Linux.fr", "url": "https://linuxfr.org/news.atom"}
         ]
 
-        headers = { 
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Accept-Language': 'fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7',
         }
         # Liste de mots-clés à ignorer absolument (Gaming, Culture Pop, etc.)
         BLACKLIST = [
             "wow", "world of warcraft", "one piece", "anime", "manga", "film", "série", 
             "netflix", "disney+", "jeu vidéo", "ps5", "xbox", "nintendo", "booster", 
-            "reacher", "acteur", "cinéma", "gaming", "zelda", "elden ring"
+            "reacher", "acteur", "cinéma", "gaming", "zelda", "elden ring", "cyberpunk", "gta", 
+            "call of duty", "fifa", "fortnite", "league of legends", "valorant", "overwatch", 
+            "minecraft", "roblox", "assassin's creed", "horizon zero dawn", "star wars", "marvel", 
+            "dc comics", "avengers", "spiderman", "batman", "superman", "iron man", "thor", "hulk",
         ]
 
         CATEGORY_MAP = {
