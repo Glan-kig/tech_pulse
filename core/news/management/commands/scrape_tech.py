@@ -28,8 +28,10 @@ class Command(BaseCommand):
 
         headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-            'Accept-Language': 'fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+            'Accept-Language': 'fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3',
         }
+
         # Liste de mots-clés à ignorer absolument (Gaming, Culture Pop, etc.)
         BLACKLIST = [
             "wow", "world of warcraft", "one piece", "anime", "manga", "film", "série", 
@@ -68,7 +70,7 @@ class Command(BaseCommand):
             return default_cat
         
         for src in SOURCE_CONFIG:
-            time.sleep(1.5) # Un peu plus de politesse
+            time.sleep(2) # Un peu de politesse
             self.stdout.write(f"Scraping de : {src['site_name']}...")
             try:
                 response = requests.get(src['url'], headers=headers, timeout=30)
