@@ -25,7 +25,7 @@ def generate_ai_summary(text):
     return response.choices[0].message.content
 """
 HF_TOKEN = os.getenv('HF_TOKEN')
-API_URL = "https://api-inference.huggingface.co/models/facebook/bart-large-cnn"
+API_URL = "https://api-inference.huggingface.co/facebook/bart-large-cnn"
 headers = {"Authorization" : f"Bearer {HF_TOKEN}"}
 
 def generate_ai_summary(text):
