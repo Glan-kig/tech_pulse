@@ -100,7 +100,7 @@ class Command(BaseCommand):
                         try:
                             ai_summary = generate_ai_summary(description)
                         except:
-                            ai_summary = "Résumé indisponible."
+                            ai_summary = description[:200] + "..."
 
                         article = Article.objects.create(
                             title=title,
