@@ -151,6 +151,17 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://techpulse-w97t.onrender.com',
+]
+
+# Forcer l'utilisation de cookies sécurisés (HTTPS uniquement)
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+
+# Empêcher l'envoi de cookies lors de requêtes cross-site de tiers
+CSRF_COOKIE_HTTPONLY = True
+
 # if not DEBUG:
     # SECURE_BROWSER_XSS_FILTER = True
     # SECURE_CONTENT_TYPE_NOSNIFF = True
