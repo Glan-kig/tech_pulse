@@ -1,5 +1,7 @@
 {% extends 'news/base.html' %}
 
+{% load markdown_tags %}
+
 {% block title %}{{ article.title }} - TechPulse{% endblock %}
 
 {% block content %}
@@ -24,7 +26,7 @@
                         </div>
                     
                         <div class="dynamic-text fs-5 lh-base fw-normal">
-                            {{ article.ai_summary|linebreaks }}
+                            {{ article.ai_summary|markdown }}
                         </div>
                     </div>
                 </div>
@@ -142,6 +144,18 @@
     /* Lueur IA discrète en mode sombre */
     body:not(.light-mode) .ai-card-glow {
         box-shadow: 0 10px 40px rgba(14, 165, 233, 0.15) !important;
+    }
+
+    /* Style pour les listes et éléments HTML générés par le filtre markdown */
+    .ai-card-glow ul {
+        padding-left: 1.5rem;
+        margin-bottom: 0;
+    }
+    .ai-card-glow li {
+        margin-bottom: 0.5rem;
+    }
+    .ai-card-glow p:last-child {
+        margin-bottom: 0; /* Évite un double espace vide sous le résumé */
     }
 
     /* Styles pour le formulaire Django */

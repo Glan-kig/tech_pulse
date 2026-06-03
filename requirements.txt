@@ -21,6 +21,7 @@ huggingface_hub==1.8.0
 idna==3.11
 jiter==0.13.0
 lxml==6.0.2
+Markdown==3.10.2
 markdown-it-py==4.0.0
 mdurl==0.1.2
 openai==2.30.0
