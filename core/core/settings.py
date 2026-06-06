@@ -32,11 +32,16 @@ DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost 127.0.0.1").split(" ")
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://techpulse-w97t.onrender.com',
+]
+
 
 # Application definition
 
 INSTALLED_APPS = [
     "unfold",
+    "unfold.contrib.filters",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -152,22 +157,15 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CSRF_TRUSTED_ORIGINS = [
-    'https://techpulse-w97t.onrender.com',
-]
 
-# Forcer l'utilisation de cookies sécurisés (HTTPS uniquement)
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
 
-# Empêcher l'envoi de cookies lors de requêtes cross-site de tiers
-CSRF_COOKIE_HTTPONLY = True
 
-# if not DEBUG:
+if not DEBUG:
     # SECURE_BROWSER_XSS_FILTER = True
     # SECURE_CONTENT_TYPE_NOSNIFF = True
-    # SESSION_COOKIE_SECURE = True
-    # CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_HTTPONLY = True
+    CSRF_COOKIE_SECURE = True
     # X_FRAME_OPTIONS = 'DENY'
     # Force le https si tu as un certificat SSL
     # SECURE_SSL_REDIRECT = True
