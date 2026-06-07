@@ -13,5 +13,6 @@ urlpatterns = [
     path('profile/change-password/', views.change_password, name='change_password'),
     path('article/<int:pk>/', views.article_detail, name='article_detail'),
     path('comment/like/<int:comment_id>/', views.like_comment, name='like_comment'),
+    path('comment/<int:comment_id>/delete/', views.delete_comment, name='delete_comment'),
     path('favicon.ico', RedirectView.as_view(url=settings.STATIC_URL + 'img/favicon.png')),
 ]

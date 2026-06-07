@@ -120,6 +120,19 @@ def article_detail(request, pk):
     })
 
 @login_required
+def delete_comment(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+    article_pk = comment.article.pk
+
+    if comment.author == request.user or request.user.is_staff: # Seul l'auteur du commentaire ou un admin peut le supprimer
+        comment.delete()
+        messages.success(request, "Votre commentaire a été supprimé avec succès.")
+    else:
+        messages.error(request, "Vous n'avez pas la permission de supprimer ce commentaire.")
+
+    return redirect('article_detail', pk=article_pk)
+
+@login_required
 def like_comment(request, comment_id):
     comment = get_object_or_404(Comment, id = comment_id)
     like, created = CommentLike.objects.get_or_create(user=request.user, comment=comment)

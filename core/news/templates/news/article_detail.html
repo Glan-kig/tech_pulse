@@ -95,12 +95,24 @@
                                     il y a {{ comment.created_at|timesince }}
                                 </small>
                             </div>
-                            <a href="{% url 'like_comment' comment.id %}" class="text-decoration-none">
-                                <button class="btn btn-sm btn-info text-dark fw-bold rounded-pill px-3 shadow-sm">
-                                    <i class="bi bi-hand-thumbs-up-fill me-1"></i>
-                                    {{ comment.likes.count }}
-                                </button>
-                            </a>
+                            
+                            <div class="d-flex align-items-center gap-2">
+                                <a href="{% url 'like_comment' comment.id %}" class="text-decoration-none">
+                                    <button class="btn btn-sm btn-info text-dark fw-bold rounded-pill px-3 shadow-sm">
+                                        <i class="bi bi-hand-thumbs-up-fill me-1"></i>
+                                        {{ comment.likes.count }}
+                                    </button>
+                                </a>
+                                
+                                {% if user.is_authenticated and comment.author == user or request.user.is_staff %}
+                                    <form action="{% url 'delete_comment' comment.id %}" method="POST" style="display:inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce commentaire ?');">
+                                        {% csrf_token %} 
+                                        <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-3 shadow-sm fw-bold">
+                                            <i class="bi bi-trash3-fill me-1"></i> Supprimer
+                                        </button>
+                                    </form>
+                                {% endif %}
+                            </div>
                         </div>
                         <p class="dynamic-text mb-0 opacity-90" style="font-size: 1.05rem; line-height: 1.6;">
                             {{ comment.content }}
