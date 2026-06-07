@@ -1,3 +1,4 @@
+import re
 import requests, time
 from bs4 import BeautifulSoup
 from django.core.management.base import BaseCommand
@@ -11,19 +12,18 @@ class Command(BaseCommand):
         # Configuration des sources (URLs mises à jour)
         SOURCE_CONFIG = [
             {"site_name": "Le Monde Informatique", "url": "https://www.lemondeinformatique.fr/flux-rss/thematique/toute-l-actualite/rss.xml"},
-            {"site_name": "L'Informatique", "url": "https://www.linformatique.com/flux-rss/"},
             {"site_name": "ZDNet France", "url": "https://www.zdnet.fr/actualites/rss/"},
             {"site_name": "TechCrunch", "url": "https://techcrunch.com/feed/"},
             {"site_name": "The Verge", "url": "https://www.theverge.com/rss/index.xml"},
-            {"site_name": "Developpez.com", "url": "https://www.developpez.com/index/rss.php?cat=actualites"},
+            {"site_name": "Numerama", "url": "https://www.numerama.com/feed"},
+            {"site_name": "Undernews", "url": "https://www.undernews.fr/feed"},
+            {"site_name": "InCyber", "url": "https://incyber.fr/feed/"},
+            {"site_name": "Actu IA", "url": "https://www.actuia.com/feed/"},
+            {"site_name": "VentureBeat", "url": "https://venturebeat.com/feed/"},
+            {"site_name": "Wired", "url": "https://www.wired.com/feed/rss"},
             {"site_name": "Clubic", "url": "https://www.clubic.com/actualites.rss"},
             {"site_name": "Programmez!", "url": "https://www.programmez.com/rss.xml"},
-            {"site_name": "InfoQ (FR/EN)", "url": "https://www.infoq.com/fr/feed/"},
             {"site_name": "Journal du Net (JDN)", "url": "https://www.journaldunet.com/rss/"},
-            {"site_name": "Numerama", "url": "https://www.numerama.com/feed"},
-            {"site_name": "LeMagIT", "url": "https://www.lemagit.fr/actualites"},
-            {"site_name": "Undernews", "url": "https://www.undernews.fr/feed"},
-            #{"site_name": "Linux.fr", "url": "https://linuxfr.org/news.atom"}
         ]
 
         headers = {
@@ -69,6 +69,38 @@ class Command(BaseCommand):
             default_cat, _ = Category.objects.get_or_create(name="Général")
             return default_cat
         
+        def extract_image_url(item, raw_description, article_link=None):
+            enclosure = item.find('enclosure')
+            if enclosure and enclosure.get('url') and 'image' in enclosure.get('type', ''):
+                return enclosure.get('url')
+            
+            media_content = item.find(['media:content', 'content'])
+            if media_content and media_content.get('url'):
+                return media_content.get('url')
+            
+            media_thumbnail = item.find(['media:thumbnail', 'thumbnail'])
+            if media_thumbnail and media_thumbnail.get('url'):
+                return media_thumbnail.get('url')
+            
+            if raw_description:
+                inner_soup = BeautifulSoup(raw_description, 'html.parser')
+                img_tag = inner_soup.find('img')
+                if img_tag and img_tag.get('src'):
+                    return img_tag.get('src')
+                
+            if article_link:
+                try:
+                    img_response = requests.get(article_link, headers=headers, timeout=5)
+                    if img_response.status_code == 200:
+                        page_soup = BeautifulSoup(img_response.content, 'html.parser')
+                        og_image = page_soup.find('meta', property='og:image') or page_soup.find('meta', attrs={'name': 'og:image'})
+                        if og_image and og_image.get('content'):
+                            return og_image.get('content')
+                except:
+                    pass
+                
+            return None
+        
         for src in SOURCE_CONFIG:
             time.sleep(2) # Un peu de politesse
             self.stdout.write(f"Scraping de : {src['site_name']}...")
@@ -80,6 +112,7 @@ class Command(BaseCommand):
                 items = soup.find_all('item') if soup.find_all('item') else soup.find_all('entry')
 
                 for item in items[:5]:
+
                     title = item.title.text if item.title else "Sans titre"
                     # Gestion du format Atom (Linux.fr) où le lien est dans <link href="...">
                     if item.link and item.link.get('href'):
@@ -97,6 +130,12 @@ class Command(BaseCommand):
                     if not Article.objects.filter(title=title).exists():
                         category = get_category_by_content(title + " " + description)
 
+                        # Nettoyer la description si elle contient des balises HTML complexes (Optionnel mais recommandé)
+                        clean_description = BeautifulSoup(description, "html.parser").get_text(separator=" ")
+                        clean_description = re.sub(r'\s+', ' ', clean_description).strip()
+
+                        image_url = extract_image_url(item, description, article_link=link)
+
                         try:
                             ai_summary = generate_ai_summary(description)
                         except:
@@ -104,13 +143,14 @@ class Command(BaseCommand):
 
                         article = Article.objects.create(
                             title=title,
-                            summary=description,
+                            summary=clean_description,
                             ai_summary=ai_summary,
-                            category=category
+                            category=category,
+                            image_url=image_url
                         )
 
                         Source.objects.create(site_name=src['site_name'], url=link, article=article)
-                        self.stdout.write(self.style.SUCCESS(f"  [OK] {title[:50]}..."))
+                        self.stdout.write(self.style.SUCCESS(f"  [OK] {title[:50]}... (Image: {'Oui' if image_url else 'Non'})"))
 
             except Exception as e:
                 self.stdout.write(self.style.ERROR(f"  [ERREUR] {src['site_name']} : {e}"))

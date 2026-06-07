@@ -16,6 +16,8 @@ class Article(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     ai_summary =  models.TextField(blank=True, null=True)
 
+    image_url = models.URLField(max_length=2000, blank=True, null=True)
+
     @property
     def is_new(self):
         return self.created_at >= timezone.now() - timedelta(hours=24)
