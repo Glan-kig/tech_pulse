@@ -4,22 +4,23 @@
 
 {% block content %}
 <div class="container py-4">
+    <!-- En-tête de la bibliothèque -->
     <div class="d-flex align-items-center mb-5">
         <h2 class="fw-bold mb-0 dynamic-text text-uppercase fs-3" style="letter-spacing: 1px;">
-            <i class="bi bi-bookmark-star text-info me-2 shadow-sm"></i> Bibliothèque Personnelle
+            <i class="bi bi-bookmark-star text-info-custom me-2"></i> Bibliothèque Personnelle
         </h2>
-        <div class="flex-grow-1 ms-4 border-bottom border-info opacity-25"></div>
+        <div class="flex-grow-1 ms-4 border-bottom border-info-custom opacity-25"></div>
     </div>
 
+    <!-- Grille des favoris -->
     <div class="row g-4">
         {% for favorite in favorites %}
         <div class="col-md-6 col-lg-4"> 
-            <div class="card h-100 border-0 shadow-lg rounded-4 overflow-hidden card-favorite dynamic-card">
+            <div class="card h-100 border-0 rounded-4 overflow-hidden card-favorite dynamic-card">
                 
                 <div class="card-body p-4">
                     <div class="d-flex justify-content-between align-items-start mb-3">
-                        <span class="badge rounded-pill px-3 py-2 fw-bold text-uppercase" 
-                            style="background: rgba(14, 165, 233, 0.1); color: #0ea5e9; font-size: 0.65rem; border: 1px solid rgba(14, 165, 233, 0.2);">
+                        <span class="badge rounded-pill px-3 py-2 fw-bold text-uppercase badge-archive">
                             ARCHIVÉ
                         </span>
         
@@ -36,11 +37,11 @@
                     </h5>
     
                     <p class="mb-4 dynamic-text fw-bold small opacity-75">
-                        <i class="bi bi-calendar-check text-info me-1"></i> Ajouté le {{ favorite.added_at|date:"d M Y" }}
+                        <i class="bi bi-calendar-check text-info-custom me-1"></i> Ajouté le {{ favorite.added_at|date:"d M Y" }}
                     </p>
 
                     <div class="p-3 rounded-3 dynamic-sub-bg border border-secondary border-opacity-10">
-                        <p class="fw-bold text-info mb-2 small text-uppercase" style="letter-spacing: 0.5px; font-size: 0.65rem;">
+                        <p class="fw-bold text-info-custom mb-2 small text-uppercase" style="letter-spacing: 0.5px; font-size: 0.65rem;">
                             <i class="bi bi-share me-1"></i> Sources enregistrées :
                         </p>
                         <div class="d-flex flex-wrap gap-2">
@@ -54,19 +55,20 @@
                 </div>
 
                 <div class="card-footer bg-transparent border-top border-secondary border-opacity-10 p-4 pt-0 text-end">
-                    <a href="{% url 'article_detail' favorite.article.pk %}" class="btn btn-info btn-sm rounded-pill px-4 fw-bold text-dark">
+                    <a href="{% url 'article_detail' favorite.article.pk %}" class="btn btn-open-article btn-sm rounded-pill px-4 fw-bold">
                         Ouvrir l'article
                     </a>
                 </div>
             </div>
         </div>
         {% empty %}
+        <!-- Vue vide (Empty State) -->
         <div class="col-12 text-center py-5">
-            <div class="py-5 rounded-4 border border-info border-opacity-10 shadow-lg dynamic-card">
-                <i class="bi bi-bookmark-x text-info opacity-25 display-1 mb-3"></i>
+            <div class="py-5 rounded-4 border border-secondary border-opacity-10 dynamic-card">
+                <i class="bi bi-bookmark-x text-info-custom opacity-25 display-1 mb-3 d-block"></i>
                 <h3 class="dynamic-text fw-bold">Bibliothèque vide</h3>
                 <p class="dynamic-muted mb-4">Vous n'avez pas encore sauvegardé d'innovations.</p>
-                <a href="{% url 'home' %}" class="btn btn-info rounded-pill px-5 fw-bold text-dark shadow-glow">
+                <a href="{% url 'home' %}" class="btn btn-open-article rounded-pill px-5 py-2 fw-bold shadow-glow">
                     Explorer le Flux
                 </a>
             </div>
@@ -76,57 +78,106 @@
 </div>
 
 <style>
-    /* Intégration des variables système */
+    /* Synchronisation parfaite avec base.html */
     .dynamic-card {
         background-color: var(--card-bg) !important;
         border: 1px solid var(--border-color) !important;
+        box-shadow: var(--shadow-custom) !important;
+        transition: background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
     }
-    .dynamic-text { color: var(--text-main) !important; }
-    .dynamic-muted { color: var(--text-muted) !important; }
+    .dynamic-text { color: var(--text-main) !important; transition: color 0.4s ease; }
+    .dynamic-muted { color: var(--text-muted) !important; transition: color 0.4s ease; }
 
+    /* Couleur Info adaptative (Bleu liseuse en clair, Cyan en sombre) */
+    .text-info-custom { color: #0ea5e9 !important; transition: color 0.4s ease; }
+    body.light-mode .text-info-custom { color: #0284c7 !important; }
+    
+    .border-info-custom { border-color: #0ea5e9 !important; }
+    body.light-mode .border-info-custom { border-color: #0284c7 !important; }
+
+    /* Blocs internes */
     .dynamic-sub-bg {
-        background-color: rgba(14, 165, 233, 0.05) !important;
+        background-color: rgba(14, 165, 233, 0.04) !important;
+        transition: background-color 0.4s ease;
     }
     body.light-mode .dynamic-sub-bg {
-        background-color: #f1f5f9 !important;
+        background-color: #ededed !important; /* Gris chaud mat matifié */
     }
 
-    /* Animation et Hover des cartes */
+    /* Badge Archivé */
+    .badge-archive {
+        background: rgba(14, 165, 233, 0.1); 
+        color: #0ea5e9; 
+        font-size: 0.65rem; 
+        border: 1px solid rgba(14, 165, 233, 0.2);
+        transition: all 0.4s ease;
+    }
+    body.light-mode .badge-archive {
+        background: rgba(2, 132, 199, 0.08);
+        color: #0284c7;
+        border-color: rgba(2, 132, 199, 0.15);
+    }
+
+    /* Bouton d'action principal */
+    .btn-open-article {
+        background-color: #0ea5e9;
+        color: #0b0e14 !important;
+        transition: all 0.3s ease;
+    }
+    .btn-open-article:hover {
+        background-color: #0284c7;
+        color: white !important;
+        transform: translateY(-1px);
+    }
+    body.light-mode .btn-open-article {
+        background-color: #0284c7;
+        color: white !important;
+    }
+    body.light-mode .btn-open-article:hover {
+        background-color: #0369a1;
+    }
+
+    /* Animation douce des cartes */
     .card-favorite {
-        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        transition: background-color 0.5s ease, border-color 0.5s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease !important;
     }
-    
     .card-favorite:hover {
-        transform: translateY(-8px);
+        transform: translateY(-5px);
         border-color: #0ea5e9 !important;
-        box-shadow: 0 15px 30px rgba(0,0,0,0.2) !important;
     }
-
-    /* Ajustement de l'ombre en mode sombre */
     body:not(.light-mode) .card-favorite:hover {
-        background: #1e293b !important;
-        box-shadow: 0 15px 30px rgba(0,0,0,0.6) !important;
+        background: #151921 !important;
+        box-shadow: 0 12px 30px rgba(0,0,0,0.5) !important;
+    }
+    body.light-mode .card-favorite:hover {
+        border-color: #0284c7 !important;
+        box-shadow: 0 12px 25px rgba(27, 27, 27, 0.06) !important;
     }
 
+    /* Interactions de liens */
     .hover-link-source:hover {
         background: #0ea5e9 !important;
         color: white !important;
         border-color: #0ea5e9 !important;
     }
-
-    .hover-danger:hover {
-        color: #ef4444 !important;
-        opacity: 1 !important;
+    body.light-mode .hover-link-source:hover {
+        background: #0284c7 !important;
+        border-color: #0284c7 !important;
     }
 
+    /* Lueur subtile du mode sombre pour l'état vide */
     .shadow-glow {
-        box-shadow: 0 0 15px rgba(14, 165, 233, 0.4);
+        box-shadow: 0 4px 14px rgba(14, 165, 233, 0.3);
+    }
+    body.light-mode .shadow-glow {
+        box-shadow: 0 4px 14px rgba(2, 132, 199, 0.2);
     }
 
+    /* Animation micro-interactive sur la corbeille */
     .hover-danger-action:hover {
         color: #ef4444 !important;
-        transform: scale(1.2) rotate(5deg);
-        filter: drop-shadow(0 0 5px rgba(239, 68, 68, 0.4));
+        transform: scale(1.15) rotate(4deg);
+        filter: drop-shadow(0 2px 4px rgba(239, 68, 68, 0.25));
     }
 </style>
 {% endblock %}

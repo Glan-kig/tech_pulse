@@ -8,21 +8,22 @@
 <div class="container py-5">
     <div class="row justify-content-center mb-5">
         <div class="col-lg-10">
+            <!-- Fil d'Ariane / Catégorie de l'article -->
             <nav aria-label="breadcrumb" class="mb-3">
-                <span class="badge bg-info text-dark rounded-pill fw-bold px-3 py-2">{{ article.category.name }}</span>
+                <span class="badge rounded-pill fw-bold px-3 py-2 badge-category-custom">{{ article.category.name }}</span>
             </nav>
             
-            <h1 class="dynamic-text fw-bold mb-4 display-5" style="letter-spacing: -1px;">{{ article.title }}</h1>
+            <h1 class="dynamic-text fw-bold mb-4 display-5" style="letter-spacing: -1px; line-height: 1.2;">{{ article.title }}</h1>
             
+            <!-- Carte Résumé IA -->
             {% if article.ai_summary %}
-                <div class="card border-0 rounded-4 mb-5 shadow-lg ai-card-glow" 
-                     style="background: var(--card-bg); border: 2px solid #0ea5e9 !important;">
-                    <div class="card-body p-4">
+                <div class="card border-0 rounded-4 mb-5 ai-card-glow dynamic-ai-card">
+                    <div class="card-body p-4 p-md-5">
                         <div class="d-flex align-items-center mb-3">
-                            <span class="badge bg-info text-dark me-2 px-3 py-2 rounded-pill fw-bold">
+                            <span class="badge me-2 px-3 py-2 rounded-pill fw-bold badge-ai-custom">
                                 <i class="bi bi-robot me-1"></i> IA
                             </span>
-                            <h5 class="text-info fw-bold mb-0">Résumé TechPulse</h5>
+                            <h5 class="text-info-custom fw-bold mb-0 text-uppercase small" style="letter-spacing: 1px;">Résumé TechPulse</h5>
                         </div>
                     
                         <div class="dynamic-text fs-5 lh-base fw-normal">
@@ -32,16 +33,18 @@
                 </div>
             {% endif %}
 
+            <!-- Corps de l'article -->
             <div class="dynamic-text mb-4 article-content" style="font-size: 1.15rem; line-height: 1.9; text-align: justify;">
                 {{ article.content|linebreaks }}
             </div>
 
+            <!-- Footer de l'article -->
             <div class="d-flex justify-content-between align-items-center mt-5 pt-4 border-top border-secondary border-opacity-25">
-                <span class="text-info small fw-bold text-uppercase" style="letter-spacing: 1px;">
+                <span class="text-info-custom small fw-bold text-uppercase" style="letter-spacing: 1px;">
                     <i class="bi bi-calendar-check me-1"></i> Publié le {{ article.created_at|date:"d M Y" }}
                 </span>
                 {% if article.sources.all %}
-                    <a href="{{ article.sources.first.url }}" target="_blank" class="btn btn-info rounded-pill px-4 fw-bold text-dark shadow-sm">
+                    <a href="{{ article.sources.first.url }}" target="_blank" class="btn btn-action-custom rounded-pill px-4 fw-bold shadow-sm">
                         <i class="bi bi-box-arrow-up-right me-2"></i>Source Originale
                     </a>
                 {% endif %}
@@ -49,10 +52,11 @@
         </div>
     </div>
 
+    <!-- Section Commentaires -->
     <div class="row justify-content-center">
         <div class="col-lg-8">
-            <h4 class="dynamic-text fw-bold mb-4 mt-5 text-uppercase" style="letter-spacing: 1px;">
-                <i class="bi bi-chat-left-text text-info me-2"></i> 
+            <h4 class="dynamic-text fw-bold mb-4 mt-5 text-uppercase" style="letter-spacing: 1px; font-size: 1.15rem;">
+                <i class="bi bi-chat-left-text text-info-custom me-2"></i> 
                 Discussion ({{ comments.count }})
             </h4>
 
@@ -66,12 +70,12 @@
                             </div>
                             <div class="text-end">
                                 {% if has_commented %}
-                                    <button type="submit" class="btn btn-success px-5 fw-bold rounded-pill text-white shadow-sm">
-                                        <i class="bi bi-plus-circle me-1"></i> AJOUTER UNE NOUVELLE ANALYSE
+                                    <button type="submit" class="btn btn-success px-5 py-2.5 fw-bold rounded-pill text-white shadow-sm text-uppercase small" style="letter-spacing: 0.5px;">
+                                        <i class="bi bi-plus-circle me-1"></i> Ajouter une nouvelle analyse
                                     </button>
                                 {% else %}
-                                    <button type="submit" class="btn btn-info px-5 fw-bold rounded-pill text-dark shadow-sm">
-                                        PUBLIER L'ANALYSE
+                                    <button type="submit" class="btn btn-action-custom px-5 py-2.5 fw-bold rounded-pill shadow-sm text-uppercase small" style="letter-spacing: 0.5px;">
+                                        Publier l'analyse
                                     </button>
                                 {% endif %}
                             </div>
@@ -79,25 +83,26 @@
                     </div>
                 </div>
             {% else %}
-                <div class="alert dynamic-card border-info border-opacity-25 dynamic-text text-center rounded-4 mb-5 py-4 shadow-sm">
-                    <p class="mb-0">
+                <div class="alert dynamic-card border-secondary border-opacity-25 dynamic-text text-center rounded-4 mb-5 py-4 shadow-sm">
+                    <p class="mb-0 small">
                         Vous souhaitez participer ? 
-                        <a href="{% url 'login' %}" class="text-info fw-bold text-decoration-none border-bottom border-info">Connectez-vous</a> 
+                        <a href="{% url 'login' %}" class="text-info-custom fw-bold text-decoration-none border-bottom border-info-custom pb-0.5">Connectez-vous</a> 
                         pour laisser un commentaire.
                     </p>
                 </div>
             {% endif %}
 
+            <!-- Liste des commentaires -->
             <div class="comment-list">
                 {% for comment in comments %}
-                    <div class="mb-4 p-4 rounded-4 shadow-sm dynamic-sub-bg border-start-cyan">
+                    <div class="mb-4 p-4 rounded-4 shadow-sm dynamic-sub-bg border-start-custom-cyan">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <div>
                                 <span class="fw-bold dynamic-text fs-5">
-                                    <i class="bi bi-person-circle me-2 text-info"></i>{{ comment.author.username }}
+                                    <i class="bi bi-person-circle me-2 text-info-custom"></i>{{ comment.author.username }}
                                 </span>
                                 <br>
-                                <small class="text-info fw-bold opacity-75" style="font-size: 0.75rem; letter-spacing: 0.5px;">
+                                <small class="dynamic-muted fw-bold opacity-75" style="font-size: 0.75rem; letter-spacing: 0.5px;">
                                     il y a {{ comment.created_at|timesince }}
                                 </small>
                             </div>
@@ -110,7 +115,7 @@
                                             {{ comment.likes.count }}
                                         </button>
                                     {% else %}
-                                        <button class="btn btn-sm btn-info text-dark fw-bold rounded-pill px-3 shadow-sm">
+                                        <button class="btn btn-sm btn-like-custom fw-bold rounded-pill px-3 shadow-sm">
                                             <i class="bi bi-hand-thumbs-up-fill me-1"></i>
                                             {{ comment.likes.count }}
                                         </button>
@@ -134,7 +139,7 @@
                 {% empty %}
                     <div class="text-center dynamic-muted py-5">
                         <i class="bi bi-chat-dots fs-1 d-block mb-3 opacity-25"></i>
-                        <p>Aucun retour réseau pour le moment.</p>
+                        <p class="small">Aucun retour réseau pour le moment.</p>
                     </div>
                 {% endfor %}
             </div>
@@ -143,71 +148,144 @@
 </div>
 
 <style>
-    /* Intégration des variables système */
+    /* Intégration des variables d'environnement globales */
     .dynamic-card {
         background-color: var(--card-bg) !important;
         border: 1px solid var(--border-color) !important;
+        box-shadow: var(--shadow-custom) !important;
+        transition: background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
     }
-    .dynamic-text { color: var(--text-main) !important; }
-    .dynamic-muted { color: var(--text-muted) !important; }
+    .dynamic-text { color: var(--text-main) !important; transition: color 0.4s ease; }
+    .dynamic-muted { color: var(--text-muted) !important; transition: color 0.4s ease; }
 
-    /* Zone de commentaire spécifique */
+    /* Info couleur adaptative (Océan en clair, Cyan en sombre) */
+    .text-info-custom { color: #0ea5e9 !important; transition: color 0.4s ease; }
+    body.light-mode .text-info-custom { color: #0284c7 !important; }
+    
+    .border-info-custom { border-color: #0ea5e9 !important; }
+    body.light-mode .border-info-custom { border-color: #0284c7 !important; }
+
+    /* Badge Catégorie Principal */
+    .badge-category-custom {
+        background: rgba(14, 165, 233, 0.1);
+        color: #0ea5e9;
+        border: 1px solid rgba(14, 165, 233, 0.15);
+        transition: all 0.4s ease;
+    }
+    body.light-mode .badge-category-custom {
+        background: rgba(2, 132, 199, 0.08);
+        color: #0284c7;
+        border-color: rgba(2, 132, 199, 0.12);
+    }
+
+    /* Bloc d'encadré IA */
+    .dynamic-ai-card {
+        background: var(--card-bg) !important;
+        border: 1px solid rgba(14, 165, 233, 0.4) !important;
+        transition: all 0.5s ease;
+    }
+    body.light-mode .dynamic-ai-card {
+        background: #ffffff !important; /* Standout sur fond crème mat */
+        border: 1px solid rgba(2, 132, 199, 0.25) !important;
+        box-shadow: 0 10px 25px rgba(2, 132, 199, 0.04) !important;
+    }
+    body:not(.light-mode) .ai-card-glow {
+        box-shadow: 0 10px 40px rgba(14, 165, 233, 0.12) !important;
+    }
+
+    .badge-ai-custom {
+        background: #0ea5e9;
+        color: #0b0e14;
+        transition: all 0.4s ease;
+    }
+    body.light-mode .badge-ai-custom {
+        background: #0284c7;
+        color: white;
+    }
+
+    /* Boutons interactifs personnalisés */
+    .btn-action-custom {
+        background-color: #0ea5e9;
+        color: #0b0e14 !important;
+        transition: all 0.3s ease;
+    }
+    body.light-mode .btn-action-custom {
+        background-color: #0284c7;
+        color: white !important;
+    }
+    .btn-action-custom:hover {
+        transform: translateY(-1px);
+        opacity: 0.95;
+    }
+
+    /* Bouton Like Neutre */
+    .btn-like-custom {
+        background-color: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--border-color);
+        color: var(--text-main);
+        transition: all 0.3s ease;
+    }
+    body.light-mode .btn-like-custom {
+        background-color: #ffffff;
+        border-color: rgba(0, 0, 0, 0.12);
+        color: #1b1b1b;
+    }
+    .btn-like-custom:hover {
+        background-color: rgba(14, 165, 233, 0.1);
+        color: #0ea5e9;
+    }
+    body.light-mode .btn-like-custom:hover {
+        background-color: rgba(2, 132, 199, 0.08);
+        color: #0284c7;
+    }
+
+    /* Style des bulles de commentaires */
     .dynamic-sub-bg {
         background-color: var(--card-bg);
         border: 1px solid var(--border-color);
+        transition: background-color 0.4s ease, border-color 0.4s ease;
+    }
+    body.light-mode .dynamic-sub-bg {
+        background-color: #ededed !important; /* Intégration matifiée */
+        border-color: rgba(0,0,0,0.02);
     }
     
-    .border-start-cyan {
+    .border-start-custom-cyan {
         border-left: 5px solid #0ea5e9 !important;
+        transition: border-left 0.4s ease;
+    }
+    body.light-mode .border-start-custom-cyan {
+        border-left-color: #0284c7 !important;
     }
 
-    body.light-mode .dynamic-sub-bg {
-        background-color: #f1f5f9 !important;
-        border-color: rgba(0,0,0,0.05);
-    }
-
-    /* Lueur IA discrète en mode sombre */
-    body:not(.light-mode) .ai-card-glow {
-        box-shadow: 0 10px 40px rgba(14, 165, 233, 0.15) !important;
-    }
-
-    /* Style pour les listes et éléments HTML générés par le filtre markdown */
-    .ai-card-glow ul {
-        padding-left: 1.5rem;
-        margin-bottom: 0;
-    }
-    .ai-card-glow li {
-        margin-bottom: 0.5rem;
-    }
-    .ai-card-glow p:last-child {
-        margin-bottom: 0; /* Évite un double espace vide sous le résumé */
-    }
-
-    /* Styles pour le formulaire Django */
+    /* Éditeur de texte (Commentaire) */
     .custom-form textarea {
-        background: rgba(var(--accent-blue-rgb, 14, 165, 233), 0.05) !important;
-        border: 2px solid var(--border-color) !important;
+        background: rgba(14, 165, 233, 0.02) !important;
+        border: 1px solid var(--border-color) !important;
         color: var(--text-main) !important;
-        border-radius: 15px;
+        border-radius: 12px;
         padding: 15px;
         width: 100%;
-        font-size: 1.1rem;
+        font-size: 1.05rem;
         transition: all 0.3s ease;
     }
-    
     body.light-mode .custom-form textarea {
         background: #ffffff !important;
+        border: 1px solid rgba(0, 0, 0, 0.12) !important;
     }
-
     .custom-form textarea:focus {
         border-color: #0ea5e9 !important;
-        box-shadow: 0 0 0 0.25rem rgba(14, 165, 233, 0.2);
+        box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.15);
         outline: none;
     }
-
-    .custom-form textarea::placeholder {
-        color: var(--text-muted) !important;
-        opacity: 0.6;
+    body.light-mode .custom-form textarea:focus {
+        border-color: #0284c7 !important;
+        box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.08);
     }
+
+    /* Markdown support */
+    .ai-card-glow ul { padding-left: 1.5rem; margin-bottom: 0; }
+    .ai-card-glow li { margin-bottom: 0.5rem; }
+    .ai-card-glow p:last-child { margin-bottom: 0; }
 </style>
 {% endblock %}

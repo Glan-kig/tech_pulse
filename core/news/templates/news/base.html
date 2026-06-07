@@ -20,16 +20,20 @@
             --text-main: #ffffff;
             --text-muted: #94a3b8;
             --border-color: rgba(255, 255, 255, 0.08);
+            --shadow-custom: 0 4px 20px rgba(0, 0, 0, 0.3);
+            --toggler-color: rgba(255, 255, 255, 0.55);
         }
 
-        /* Mode Clair Overrides */
+        /* Mode "Papier mat / Crème chaud" — Confort visuel maximal */
         body.light-mode {
-            --bg-body: #f8fafc;
-            --bg-navbar: rgba(255, 255, 255, 0.9);
-            --card-bg: #ffffff;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
-            --border-color: rgba(0, 0, 0, 0.1);
+            --bg-body: #f4f2ee;       /* Une teinte sable/crème très douce (style LinkedIn/Liseuse) */
+            --bg-navbar: rgba(238, 235, 230, 0.85); /* S'accorde harmonieusement avec le fond chaud */
+            --card-bg: #faf9f6;       /* Fini le blanc pur ! Un blanc cassé lin très doux pour les cartes */
+            --text-main: #27272a;     /* Un gris-anthracite chaud, beaucoup moins agressif que le noir pur */
+            --text-muted: #52525b;    /* Un gris intermédiaire parfaitement lisible */
+            --border-color: rgba(39, 39, 42, 0.08); /* Bordures subtiles teintées */
+            --shadow-custom: 0 4px 15px rgba(27, 27, 27, 0.04); /* Ombre douce atténuée */
+            --toggler-color: rgba(39, 39, 42, 0.55);
         }
 
         body {
@@ -37,16 +41,18 @@
             color: var(--text-main);
             font-family: 'Inter', sans-serif;
             padding-top: 90px;
-            transition: all 0.3s ease;
+            /* Interpolation fluide via un timing plus doux pour l'adaptation de l'œil */
+            transition: background-color 0.5s cubic-bezier(0.25, 1, 0.5, 1), color 0.5s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
         /* Navbar "Glass" dynamique */
         .navbar {
             background: var(--bg-navbar) !important;
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border-bottom: 1px solid var(--border-color);
             padding: 0.8rem 0;
-            transition: all 0.3s ease;
+            transition: background-color 0.5s ease, border-color 0.5s ease;
         }
 
         .navbar-brand {
@@ -54,17 +60,29 @@
             font-weight: 800;
             letter-spacing: -1px;
             color: var(--text-main) !important;
+            transition: color 0.5s ease;
         }
 
         .nav-link {
             font-size: 0.9rem;
             font-weight: 600;
             color: var(--text-muted) !important;
-            transition: color 0.2s;
+            transition: color 0.2s ease;
         }
 
         .nav-link:hover, .nav-link.active {
             color: var(--accent-blue) !important;
+        }
+
+        /* Personnalisation du bouton Hamburger */
+        .custom-toggler {
+            border-color: var(--border-color) !important;
+            padding: 0.5rem 0.75rem;
+            border-radius: 8px;
+        }
+        .custom-toggler .navbar-toggler-icon {
+            /* Génère un icône de menu adaptatif basé sur la variable CSS */
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(14, 165, 233, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
         }
 
         /* Bouton Switch Thème */
@@ -77,13 +95,13 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(var(--accent-blue), 0.1);
+            background: rgba(14, 165, 233, 0.1);
             color: var(--accent-blue);
             border: 1px solid var(--border-color);
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
         }
         .theme-toggle:hover {
-            transform: rotate(15deg) scale(1.1);
+            transform: rotate(15deg) scale(1.05);
             background: var(--accent-blue);
             color: white;
         }
@@ -109,11 +127,20 @@
             transform: translateY(-1px);
         }
 
+        /* Transition fluide globale pour toutes les cartes de l'écosystème TechPulse */
+        .dynamic-card, .card-premium, .card {
+            background-color: var(--card-bg) !important;
+            border-color: var(--border-color) !important;
+            box-shadow: var(--shadow-custom) !important;
+            transition: background-color 0.5s ease, border-color 0.5s ease, transform 0.3s ease, box-shadow 0.3s ease !important;
+        }
+
         /* Footer Stylisé */
         footer {
             border-top: 1px solid var(--border-color);
             background-color: var(--bg-navbar);
             margin-top: 80px;
+            transition: background-color 0.5s ease, border-color 0.5s ease;
         }
 
         .footer-brand {
@@ -121,53 +148,77 @@
             font-weight: 800;
         }
 
-        /* Animation */
-        .fade-in { animation: fadeIn 0.6s ease-out; }
+        /* Animation d'affichage */
+        .fade-in { animation: fadeIn 0.5s cubic-bezier(0.25, 1, 0.5, 1); }
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(15px); }
+            from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        body.light-mode .nav-link {
-            color: #1e293b !important; /* Force un gris foncé pour le mode clair */
-        }
+        body.light-mode .nav-link { color: var(--text-muted) !important; }
+        body.light-mode .navbar-brand { color: var(--text-main) !important; }
 
-        body.light-mode .navbar-brand {
-            color: #1e293b !important;
+        /* Ajustements pour le menu mobile déroulé */
+        @media (max-width: 991.98px) {
+            .navbar-collapse {
+                background: var(--bg-card);
+                margin-top: 1rem;
+                padding: 1rem;
+                border-radius: 12px;
+                border: 1px solid var(--border-color);
+                box-shadow: var(--shadow-custom);
+            }
+            .navbar-nav-custom {
+                flex-direction: column;
+                align-items: flex-start !important;
+                gap: 1rem !important;
+            }
         }
     </style>
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-dark fixed-top">
+        <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
             <div class="container">
+                <!-- Brand Logo -->
                 <a class="navbar-brand" href="{% url 'home' %}">
                     <span style="color: var(--accent-blue);">Tech</span>Pulse
                 </a>
                 
-                <div class="d-flex align-items-center gap-2 gap-md-3">
-                    <div id="theme-switch" class="theme-toggle me-2" title="Changer de mode">
+                <!-- Bloc d'actions toujours visibles (Bouton thème + Toggle Hamburger) -->
+                <div class="d-flex align-items-center gap-2 order-lg-last">
+                    <div id="theme-switch" class="theme-toggle" title="Changer de mode">
                         <i class="bi bi-moon-stars-fill" id="theme-icon"></i>
                     </div>
 
-                    {% if user.is_authenticated %}
-                        <a class="nav-link d-none d-lg-block" href="{% url 'my_favorites' %}">
-                            <i class="bi bi-bookmark-star me-1"></i> Favoris
-                        </a>
-                        <a class="nav-link" href="{% url 'profile' %}">
-                            <i class="bi bi-person-circle text-info"></i> <span class="d-none d-md-inline ms-1">Profil</span>
-                        </a>
-                        <form action="{% url 'logout' %}" method="post" class="m-0">
-                            {% csrf_token %}
-                            <button type="submit" class="btn-auth btn btn-outline-danger border-0">
-                                <i class="bi bi-power"></i>
-                            </button>
-                        </form>
-                    {% else %}
-                        <a class="nav-link d-none d-sm-block" href="{% url 'login' %}">Connexion</a>
-                        <a class="btn-auth btn-primary-custom text-decoration-none shadow-sm" href="{% url 'register' %}">Rejoindre</a>
-                    {% endif %}
+                    <button class="navbar-toggler custom-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTechPulse" aria-controls="navbarTechPulse" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
                 </div>
+
+                <!-- Menu rétractable (Hamburger) -->
+                <div class="collapse navbar-collapse justify-content-end" id="navbarTechPulse">
+                    <div class="d-flex align-items-lg-center gap-3 mt-3 mt-lg-0 navbar-nav-custom">
+                        {% if user.is_authenticated %}
+                            <a class="nav-link {% if request.resolver_match.url_name == 'my_favorites' %}active{% endif %}" href="{% url 'my_favorites' %}">
+                                <i class="bi bi-bookmark-star me-1"></i> Favoris
+                            </a>
+                            <a class="nav-link {% if request.resolver_match.url_name == 'profile' %}active{% endif %}" href="{% url 'profile' %}">
+                                <i class="bi bi-person-circle text-info"></i> <span class="ms-1">Profil</span>
+                            </a>
+                            <form action="{% url 'logout' %}" method="post" class="m-0">
+                                {% csrf_token %}
+                                <button type="submit" class="btn-auth btn btn-outline-danger border-0 px-0 px-lg-3">
+                                    <i class="bi bi-power me-2 d-inline d-lg-none"></i><span class="d-inline d-lg-none fw-bold">Déconnexion</span><i class="bi bi-power d-none d-lg-inline"></i>
+                                </button>
+                            </form>
+                        {% else %}
+                            <a class="nav-link" href="{% url 'login' %}">Connexion</a>
+                            <a class="btn-auth btn-primary-custom text-decoration-none shadow-sm text-center w-100 w-lg-auto" href="{% url 'register' %}">Rejoindre</a>
+                        {% endif %}
+                    </div>
+                </div>
+
             </div>
         </nav>
     </header>
@@ -180,13 +231,13 @@
     <footer class="py-5">
         <div class="container text-center">
             <h4 class="footer-brand mb-3">TechPulse</h4>
-            <p class="fw-bold mb-4" style="color: var(--text-main);">
+            <p class="fw-bold mb-4" style="color: var(--text-main); transition: color 0.5s;">
                 &copy; 2026 Veille Étudiante  <span class="text-info">Innovation & Actualité</span>
             </p>
             <div class="d-flex justify-content-center gap-4 fs-4 mb-4">
                 <a href="https://github.com/Glan-kig/tech_pulse" class="text-info opacity-75"><i class="bi bi-github"></i></a>
             </div>
-            <p class="small opacity-50" style="color: var(--text-muted);">
+            <p class="small opacity-50" style="color: var(--text-muted); transition: color 0.5s;">
                 Plateforme optimisée pour la veille technologique académique et professionnelle.
             </p>
         </div>
@@ -199,7 +250,6 @@
         const themeIcon = document.getElementById('theme-icon');
         const body = document.body;
 
-        // Vérifier si un thème est déjà enregistré
         if (localStorage.getItem('theme') === 'light') {
             body.classList.add('light-mode');
             themeIcon.classList.replace('bi-moon-stars-fill', 'bi-sun-fill');

@@ -5,15 +5,15 @@
 {% block content %}
 <div class="row justify-content-center align-items-center fade-in py-5" style="min-height: 85vh;">
     <div class="col-11 col-sm-9 col-md-7 col-lg-5">
-        <div class="card border-0 shadow-lg rounded-4 overflow-hidden" 
-             style="background: #111827; border: 1px solid #1e293b !important; box-shadow: 0 0 30px rgba(0,0,0,0.4) !important;">
+        <!-- La carte utilise l'architecture dynamique globale -->
+        <div class="card border-0 rounded-4 overflow-hidden dynamic-card">
             
             <div class="card-header bg-transparent text-center py-4 border-0 mt-3">
                 <div class="mb-2">
-                    <i class="bi bi-person-plus text-info display-5"></i>
+                    <i class="bi bi-person-plus text-info-custom display-5"></i>
                 </div>
-                <h2 class="fw-bold mb-1 text-white text-uppercase" style="letter-spacing: 1.5px;">Nouveau Profil</h2>
-                <p class="small text-info opacity-75 fw-bold">REJOINDRE LE RÉSEAU TECHPULSE</p>
+                <h2 class="fw-bold mb-1 dynamic-text text-uppercase" style="letter-spacing: 1.5px;">Nouveau Profil</h2>
+                <p class="small text-info-custom fw-bold text-uppercase" style="letter-spacing: 0.5px;">REJOINDRE LE RÉSEAU TECHPULSE</p>
             </div>
 
             <div class="card-body p-4 p-md-5 pt-0">
@@ -21,24 +21,24 @@
                     {% csrf_token %}
                     
                     {% if form.non_field_errors %}
-                        <div class="alert py-2 px-3 border-0 rounded-3 small mb-4 text-center animate__animated animate__headShake" 
-                             style="background: rgba(220, 38, 38, 0.2); color: #fca5a5; border: 1px solid #dc2626 !important;">
+                        <div class="alert py-2 px-3 border-0 rounded-3 small mb-4 text-center animate__animated animate__headShake custom-alert-error">
                             {% for error in form.non_field_errors %}{{ error }}{% endfor %}
                         </div>
                     {% endif %}
 
                     {% for field in form %}
                         <div class="mb-4">
-                            <label class="form-label small fw-bold text-info mb-2 text-uppercase" style="font-size: 0.75rem;">
+                            <label class="form-label small fw-bold text-info-custom mb-2 text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">
                                 {{ field.label }}
                             </label>
                             
+                            <!-- Wrapper de l'input stylisé -->
                             <div class="input-group-custom border rounded-3 px-3 py-2 d-flex align-items-center">
                                 {{ field }}
                             </div>
 
                             {% if field.help_text %}
-                                <div class="form-text x-small text-muted mt-2 px-1 help-box">
+                                <div class="form-text x-small dynamic-muted mt-2 help-box">
                                     {{ field.help_text|safe }}
                                 </div>
                             {% endif %}
@@ -52,15 +52,15 @@
                     {% endfor %}
 
                     <div class="d-grid gap-2 mt-5">
-                        <button type="submit" class="btn btn-info py-3 rounded-pill fw-bold text-dark text-uppercase shadow-sm hover-glow">
+                        <button type="submit" class="btn btn-register-submit py-3 rounded-pill fw-bold text-uppercase shadow-sm hover-glow">
                             Créer mon compte
                         </button>
                     </div>
                 </form>
 
                 <div class="text-center mt-5 pt-4 border-top border-secondary border-opacity-25">
-                    <p class="small text-white opacity-75 mb-1">Déjà membre de la communauté ?</p>
-                    <a href="{% url 'login' %}" class="text-info fw-bold text-decoration-none small border-bottom border-info pb-1">
+                    <p class="small dynamic-text opacity-75 mb-1">Déjà membre de la communauté ?</p>
+                    <a href="{% url 'login' %}" class="text-info-custom fw-bold text-decoration-none small pb-1 link-login-redirect">
                         Se connecter à ma session
                     </a>
                 </div>
@@ -68,7 +68,7 @@
         </div>
 
         <div class="text-center mt-4 mb-5">
-            <a href="/" class="text-info opacity-50 small text-decoration-none hover-white transition-all">
+            <a href="/" class="small text-decoration-none link-back-flow transition-all">
                 <i class="bi bi-chevron-left"></i> Retour au flux TechPulse
             </a>
         </div>
@@ -76,17 +76,36 @@
 </div>
 
 <style>
-    /* Harmonisation avec la page login */
+    /* Intégration à la charte graphique globale */
+    .dynamic-card {
+        background-color: var(--card-bg) !important;
+        border: 1px solid var(--border-color) !important;
+        box-shadow: var(--shadow-custom) !important;
+        transition: background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
+    }
+    .dynamic-text { color: var(--text-main) !important; transition: color 0.4s ease; }
+    .dynamic-muted { color: var(--text-muted) !important; transition: color 0.4s ease; }
+
+    /* Couleur info adaptative (Bleu océan en clair, Cyan en sombre) */
+    .text-info-custom { color: #0ea5e9 !important; transition: color 0.4s ease; }
+    body.light-mode .text-info-custom { color: #0284c7 !important; }
+
+    /* Personnalisation des groupes de champs (Inputs) */
     .input-group-custom {
-        background: #0f172a; 
-        border: 1px solid #334155 !important;
+        background: rgba(255, 255, 255, 0.03) !important; 
+        border: 1px solid var(--border-color) !important;
         transition: all 0.3s ease;
     }
+    body.light-mode .input-group-custom {
+        background: #ffffff !important; /* Fond blanc pur pour détacher sur le papier mat */
+        border: 1px solid rgba(0, 0, 0, 0.12) !important;
+    }
 
+    /* Ciblage de l'input généré par Django à l'intérieur du groupe */
     .input-group-custom input {
         border: none !important;
         background: transparent !important;
-        color: #ffffff !important; /* Force le texte saisi en BLANC */
+        color: var(--text-main) !important;
         width: 100%;
         outline: none !important;
         padding: 4px 0;
@@ -95,18 +114,27 @@
 
     .input-group-custom:focus-within {
         border-color: #0ea5e9 !important;
-        box-shadow: 0 0 12px rgba(14, 165, 233, 0.3);
-        background: #1e293b;
+        box-shadow: 0 0 12px rgba(14, 165, 233, 0.2) !important;
+        background: rgba(255, 255, 255, 0.05) !important;
+    }
+    body.light-mode .input-group-custom:focus-within {
+        border-color: #0284c7 !important;
+        box-shadow: 0 0 12px rgba(2, 132, 199, 0.1) !important;
+        background: #ffffff !important;
     }
 
-    /* Nettoyage des listes d'aide de Django */
+    /* Nettoyage des listes d'aide Django (Style terminal poli) */
     .help-box {
         font-size: 0.7rem;
         line-height: 1.4;
-        color: #94a3b8 !important;
-        background: rgba(255,255,255,0.03);
-        padding: 8px 12px;
+        color: var(--text-muted) !important;
+        background: rgba(255, 255, 255, 0.02);
+        padding: 10px 14px;
         border-radius: 8px;
+        transition: all 0.4s ease;
+    }
+    body.light-mode .help-box {
+        background: #ededed; /* Gris mat doux */
     }
 
     .help-box ul { 
@@ -116,20 +144,73 @@
     }
     
     .help-box li::before {
-        content: "> "; /* Style terminal */
+        content: "> ";
         color: #0ea5e9;
         font-weight: bold;
+        transition: color 0.4s ease;
+    }
+    body.light-mode .help-box li::before {
+        color: #0284c7;
     }
 
-    /* Bouton Glow */
+    /* Alerte d'erreur */
+    .custom-alert-error {
+        background: rgba(220, 38, 38, 0.15) !important; 
+        color: #fca5a5 !important; 
+        border: 1px solid rgba(220, 38, 38, 0.3) !important;
+    }
+    body.light-mode .custom-alert-error {
+        background: #fef2f2 !important;
+        color: #b91c1c !important;
+        border: 1px solid #fee2e2 !important;
+    }
+
+    /* Bouton d'action principal */
+    .btn-register-submit {
+        background-color: #0ea5e9;
+        color: #0b0e14 !important;
+        transition: all 0.3s ease;
+    }
+    body.light-mode .btn-register-submit {
+        background-color: #0284c7;
+        color: white !important;
+    }
+
+    /* Effets de survol (Hover Glow) */
     .hover-glow:hover {
-        background: #38bdf8 !important;
         transform: translateY(-2px);
-        box-shadow: 0 0 20px rgba(14, 165, 233, 0.5) !important;
+        box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3) !important;
+    }
+    body:not(.light-mode) .hover-glow:hover {
+        background: #38bdf8 !important;
         color: #000 !important;
+    }
+    body.light-mode .hover-glow:hover {
+        background: #0369a1 !important;
+        box-shadow: 0 4px 15px rgba(2, 132, 199, 0.2) !important;
+    }
+
+    /* Liens et redirections */
+    .link-login-redirect {
+        border-bottom: 1px solid transparent;
+        transition: all 0.2s ease;
+    }
+    .link-login-redirect:hover {
+        border-bottom-color: currentColor;
+    }
+
+    .link-back-flow {
+        color: var(--text-muted);
+        opacity: 0.6;
+    }
+    .link-back-flow:hover {
+        color: #0ea5e9 !important;
+        opacity: 1;
+    }
+    body.light-mode .link-back-flow:hover {
+        color: #0284c7 !important;
     }
 
     .transition-all { transition: all 0.3s ease; }
-    .hover-white:hover { color: #fff !important; opacity: 1 !important; }
 </style>
 {% endblock %}

@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, update_session_auth_hash
 from django.contrib import messages
 from django.db.models import Q
+from django.http import HttpResponseRedirect
 from django.core.paginator import Paginator
 from .models import Article, Category, Favorite, Comment, CommentLike
 from .forms import CommentForm, MyPasswordChangeForm
@@ -33,6 +34,18 @@ def home(request):
     # Récupération de toutes les catégories pour les afficher dans le menu de filtrage
     categories = Category.objects.all()
 
+    if request.user.is_authenticated:
+        favorite_ids = set(
+            Favorite.objects.filter(user=request.user)
+            .values_list('article_id', flat=True)
+        )
+
+        for article in page_obj:
+            article.is_favorited = article.id in favorite_ids
+    else:
+        for article in page_obj:
+            article.is_favorited = False
+
     content = {
         'page_obj' : page_obj,
         'categories': categories,
@@ -59,6 +72,11 @@ def add_favorite(request, article_id):
     # Ajoute l'article aux favoris de l'utilisateur, en évitant les doublons grâce à get_or_create
     Favorite.objects.get_or_create(user=request.user, article=article)
 
+    next_url = request.META.get('HTTP_REFERER', 'home')
+    messages.success(request, f"L'article '{article.title}' a été ajouté à vos favoris.")
+
+    if next_url:
+        return HttpResponseRedirect(next_url)
     return redirect('home')
 
 @login_required
@@ -66,7 +84,11 @@ def remove_from_favorites(request, article_id):
     favorite = get_object_or_404(Favorite, user=request.user, article_id=article_id)
     favorite.delete()
     messages.success(request, f"L'article '{favorite.article.title}' a été retiré de vos favoris.")
-    return redirect('my_favorites')
+    next_url = request.META.get('HTTP_REFERER', 'home')
+
+    if next_url:
+        return HttpResponseRedirect(next_url)
+    return redirect('home')
 
 @login_required
 def my_favorites(request):

@@ -6,32 +6,34 @@
 <div class="container py-5">
     <div class="row g-4 justify-content-center">
         
+        <!-- Carte de gauche : Infos utilisateur -->
         <div class="col-lg-4">
-            <div class="card border-0 shadow-lg rounded-4 text-center h-100 dynamic-card">
+            <div class="card border-0 rounded-4 text-center h-100 dynamic-card">
                 <div class="card-body p-4 p-xl-5">
+                    <!-- Avatar premium avec texte adapté pour le mode clair/sombre -->
                     <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-4 profile-avatar-glow" 
-                         style="width: 100px; height: 100px; background: #0ea5e9; font-size: 2.8rem; color: #000; font-weight: 800; border: 4px solid var(--border-color);">
-                        {{ user.username|first|upper }}
+                         style="width: 100px; height: 100px; background: #0ea5e9; font-size: 2.8rem; font-weight: 800; border: 4px solid var(--border-color);">
+                        <span class="avatar-text-color">{{ user.username|first|upper }}</span>
                     </div>
                     
                     <h2 class="dynamic-text fw-bold mb-1 text-uppercase" style="letter-spacing: 1px;">{{ user.username }}</h2>
-                    <p class="text-info fw-bold small mb-4 px-2 py-1 rounded" style="background: rgba(14, 165, 233, 0.1); display: inline-block;">
+                    <p class="fw-bold small mb-4 px-3 py-1 rounded badge-profile-email">
                         <i class="bi bi-envelope me-1"></i> {{ user.email }}
                     </p>
                     
                     <div class="row g-0 py-4 border-top border-bottom border-secondary border-opacity-25 mb-4 mt-2">
                         <div class="col-6 border-end border-secondary border-opacity-25">
                             <h3 class="dynamic-text fw-bold mb-0">{{ fav_count }}</h3>
-                            <small class="text-info fw-bold text-uppercase" style="font-size: 0.65rem; letter-spacing: 1px;">Favoris</small>
+                            <small class="text-info-custom fw-bold text-uppercase" style="font-size: 0.65rem; letter-spacing: 1px;">Favoris</small>
                         </div>
                         <div class="col-6">
                             <h3 class="dynamic-text fw-bold mb-0">{{ user.date_joined|date:"M Y" }}</h3>
-                            <small class="text-info fw-bold text-uppercase" style="font-size: 0.65rem; letter-spacing: 1px;">Actif depuis</small>
+                            <small class="text-info-custom fw-bold text-uppercase" style="font-size: 0.65rem; letter-spacing: 1px;">Actif depuis</small>
                         </div>
                     </div>
 
                     <div class="d-grid gap-2">
-                        <a href="{% url 'change_password' %}" class="btn btn-outline-info btn-sm rounded-pill py-2 fw-bold transition-all shadow-sm">
+                        <a href="{% url 'change_password' %}" class="btn btn-password btn-sm rounded-pill py-2 fw-bold transition-all shadow-sm">
                             <i class="bi bi-shield-lock me-2"></i>MODIFIER LE MOT DE PASSE
                         </a>
                     </div>
@@ -39,11 +41,12 @@
             </div>
         </div>
 
+        <!-- Carte de droite : Historique des favoris -->
         <div class="col-lg-6">
-            <div class="card border-0 shadow-lg rounded-4 h-100 dynamic-card">
+            <div class="card border-0 rounded-4 h-100 dynamic-card">
                 <div class="card-header bg-transparent border-bottom border-secondary border-opacity-25 p-4">
                     <h4 class="dynamic-text fw-bold mb-0 fs-5 text-uppercase" style="letter-spacing: 1px;">
-                        <i class="bi bi-clock-history text-info me-2"></i>Derniers enregistrements
+                        <i class="bi bi-clock-history text-info-custom me-2"></i>Derniers enregistrements
                     </h4>
                 </div>
                 
@@ -57,11 +60,11 @@
                                             {{ fav.article.title|truncatechars:60 }}
                                         </a>
                                         <div class="d-flex align-items-center">
-                                            <span class="badge bg-dark-subtle text-info border border-info border-opacity-25 me-3" style="font-size: 0.7rem;">
+                                            <span class="badge badge-fav-category me-3">
                                                 {{ fav.article.category.name }}
                                             </span>
                                             <span class="dynamic-text fw-bold" style="font-size: 0.8rem;">
-                                                <i class="bi bi-calendar-check text-info me-1"></i> {{ fav.added_at|date:"d M Y" }}
+                                                <i class="bi bi-calendar-check text-info-custom me-1"></i> {{ fav.added_at|date:"d M Y" }}
                                             </span>
                                         </div>
                                     </div>
@@ -72,7 +75,7 @@
                             <div class="text-center py-5">
                                 <i class="bi bi-bookmark-x text-secondary display-4 opacity-25"></i>
                                 <p class="dynamic-text opacity-50 mt-3">Aucun favori détecté sur ce profil.</p>
-                                <a href="{% url 'home' %}" class="btn btn-info btn-sm rounded-pill px-4 fw-bold text-dark">LANCER L'EXPLORATION</a>
+                                <a href="{% url 'home' %}" class="btn btn-explorer-profile btn-sm rounded-pill px-4 fw-bold">LANCER L'EXPLORATION</a>
                             </div>
                         {% endfor %}
                     </div>
@@ -80,7 +83,7 @@
 
                 {% if recent_fav %}
                 <div class="card-footer bg-transparent border-0 p-4 text-center border-top border-secondary border-opacity-10">
-                    <a href="{% url 'my_favorites' %}" class="text-info fw-bold text-decoration-none hover-underline small text-uppercase" style="letter-spacing: 1px;">
+                    <a href="{% url 'my_favorites' %}" class="text-info-custom fw-bold text-decoration-none hover-underline small text-uppercase" style="letter-spacing: 1px;">
                         Voir l'archive complète <i class="bi bi-arrow-right-circle ms-2"></i>
                     </a>
                 </div>
@@ -96,44 +99,115 @@
     .dynamic-card {
         background-color: var(--card-bg) !important;
         border: 1px solid var(--border-color) !important;
+        box-shadow: var(--shadow-custom) !important;
+        transition: background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
     }
-    .dynamic-text { color: var(--text-main) !important; }
+    .dynamic-text { color: var(--text-main) !important; transition: color 0.4s ease; }
 
-    /* Effet Avatar Glow */
+    /* Forcer une couleur lisible sur la couleur cyan pure de l'avatar */
+    .avatar-text-color { color: #0b0e14; }
+    body.light-mode .avatar-text-color { color: #ffffff; } /* Blanc sur l'avatar pour le mode clair premium */
+
+    /* Couleur Info adaptative (Océan en clair, Cyan en sombre) */
+    .text-info-custom { color: #0ea5e9 !important; transition: color 0.4s ease; }
+    body.light-mode .text-info-custom { color: #0284c7 !important; }
+
+    /* Badge Email sous l'avatar */
+    .badge-profile-email {
+        background: rgba(14, 165, 233, 0.1);
+        color: #0ea5e9;
+        display: inline-block;
+        transition: all 0.4s ease;
+    }
+    body.light-mode .badge-profile-email {
+        background: rgba(2, 132, 199, 0.08);
+        color: #0284c7;
+    }
+
+    /* Bouton de mot de passe */
+    .btn-password {
+        border: 1px solid rgba(14, 165, 233, 0.4);
+        color: #0ea5e9 !important;
+        background: transparent;
+    }
+    .btn-password:hover {
+        background: rgba(14, 165, 233, 0.1);
+        border-color: #0ea5e9;
+    }
+    body.light-mode .btn-password {
+        border-color: #0284c7;
+        color: #0284c7 !important;
+    }
+    body.light-mode .btn-password:hover {
+        background: rgba(2, 132, 199, 0.05);
+    }
+
+    /* Badge catégorie de l'historique */
+    .badge-fav-category {
+        background-color: rgba(255, 255, 255, 0.05);
+        color: #0ea5e9;
+        border: 1px solid rgba(14, 165, 233, 0.25);
+        font-size: 0.7rem;
+        transition: all 0.4s ease;
+    }
+    body.light-mode .badge-fav-category {
+        background-color: rgba(2, 132, 199, 0.06);
+        color: #0284c7;
+        border-color: rgba(2, 132, 199, 0.15);
+    }
+
+    /* Bouton d'exploration vide */
+    .btn-explorer-profile {
+        background-color: #0ea5e9;
+        color: #0b0e14 !important;
+    }
+    body.light-mode .btn-explorer-profile {
+        background-color: #0284c7;
+        color: white !important;
+    }
+
+    /* Effet Avatar Glow lissé */
     .profile-avatar-glow {
-        box-shadow: 0 0 20px rgba(14, 165, 233, 0.4);
-        transition: all 0.3s ease;
+        box-shadow: 0 0 20px rgba(14, 165, 233, 0.25);
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    
+    body.light-mode .profile-avatar-glow {
+        background: #0284c7 !important; /* Bleu plus riche en mode clair */
+        box-shadow: 0 4px 15px rgba(2, 132, 199, 0.2);
+    }
     .profile-avatar-glow:hover {
-        box-shadow: 0 0 30px rgba(14, 165, 233, 0.6);
-        transform: scale(1.05);
+        transform: scale(1.03);
     }
 
-    /* Style des items de la liste */
+    /* Liste des favoris : Hover subtil */
     .fav-item-hover {
         border-left: 4px solid transparent !important;
         cursor: pointer;
+        transition: all 0.3s ease;
     }
-    
     .fav-item-hover:hover {
-        background: rgba(14, 165, 233, 0.05) !important;
+        background: rgba(14, 165, 233, 0.03) !important;
         border-left: 4px solid #0ea5e9 !important;
     }
-
-    /* Mode clair spécifique pour le hover de liste */
     body.light-mode .fav-item-hover:hover {
-        background: rgba(0, 0, 0, 0.02) !important;
+        background: #ededed !important; /* Gris mat doux assorti pour le survol en mode clair */
+        border-left: 4px solid #0284c7 !important;
     }
 
+    /* Liens dynamiques au survol */
     .hover-cyan:hover {
         color: #0ea5e9 !important;
-        padding-left: 5px;
+        padding-left: 3px;
+    }
+    body.light-mode .hover-cyan:hover {
+        color: #0284c7 !important;
     }
     
     .hover-underline:hover {
-        color: var(--accent-blue) !important;
-        opacity: 1;
+        color: #0ea5e9 !important;
+    }
+    body.light-mode .hover-underline:hover {
+        color: #0284c7 !important;
     }
 
     .transition-all { transition: all 0.25s ease-in-out; }
