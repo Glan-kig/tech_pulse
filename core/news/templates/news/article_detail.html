@@ -15,6 +15,13 @@
             
             <h1 class="dynamic-text fw-bold mb-4 display-5" style="letter-spacing: -1px; line-height: 1.2;">{{ article.title }}</h1>
             
+            <!-- Grande Image de couverture d'article (Scrapée) -->
+            {% if article.image_url %}
+                <div class="mb-5 rounded-4 overflow-hidden border border-secondary border-opacity-10 article-image-container" style="max-height: 450px;">
+                    <img src="{{ article.image_url }}" class="w-100 h-100 object-fit-cover" alt="{{ article.title }}">
+                </div>
+            {% endif %}
+
             <!-- Carte Résumé IA -->
             {% if article.ai_summary %}
                 <div class="card border-0 rounded-4 mb-5 ai-card-glow dynamic-ai-card">
@@ -164,6 +171,15 @@
     
     .border-info-custom { border-color: #0ea5e9 !important; }
     body.light-mode .border-info-custom { border-color: #0284c7 !important; }
+
+    /* Ombre subtile et transition pour l'image de couverture principale */
+    .article-image-container {
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        transition: box-shadow 0.4s ease;
+    }
+    body.light-mode .article-image-container {
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.04);
+    }
 
     /* Badge Catégorie Principal */
     .badge-category-custom {

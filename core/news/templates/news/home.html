@@ -5,7 +5,6 @@
 {% block content %}
 <div class="container py-4">
 
-    <!-- Section d'introduction et d'onboarding utilisateur -->
     <div class="row justify-content-center mb-4">
         <div class="col-lg-10">
             <div class="p-4 rounded-4 dynamic-sub-bg border border-secondary border-opacity-10 d-flex align-items-start gap-3 onboarding-banner shadow-sm">
@@ -23,7 +22,6 @@
         </div>
     </div>
 
-    <!-- Barre de recherche premium -->
     <div class="row justify-content-center mb-5">
         <div class="col-lg-10">
             <form action="." method="get" class="p-2 rounded-4 shadow-lg d-flex align-items-center search-bar-container dynamic-card">
@@ -51,7 +49,6 @@
         </div>
     </div>
 
-    <!-- Titre de section -->
     <div class="d-flex align-items-center mb-4">
         <h2 class="fw-bold mb-0 dynamic-text text-uppercase fs-4" style="letter-spacing: 1px;">
             <i class="bi bi-cpu text-info-custom me-2"></i>Dernières Nouvelles
@@ -59,11 +56,16 @@
         <div class="flex-grow-1 ms-4 border-bottom border-secondary opacity-25"></div>
     </div>
 
-    <!-- Grille d'articles -->
     <div class="row g-4"> 
         {% for article in page_obj %}
         <div class="col-md-6 col-xl-4"> 
             <div class="card h-100 border-0 rounded-4 overflow-hidden card-premium dynamic-card">
+                
+                {% if article.image_url %}
+                <div class="position-relative overflow-hidden w-100 border-bottom border-secondary border-opacity-10" style="height: 180px;">
+                    <img src="{{ article.image_url }}" class="w-100 h-100 object-fit-cover img-cover-transition" alt="{{ article.title }}">
+                </div>
+                {% endif %}
                 
                 <div class="card-body p-4"> 
                     <div class="d-flex justify-content-between align-items-center mb-3">
@@ -140,12 +142,10 @@
         {% endfor %}
     </div>
 
-    <!-- Pagination Avancée Multi-Contrôles -->
     {% if page_obj.paginator.num_pages > 1 %}
     <nav aria-label="Page navigation" class="mt-5 mb-3">
         <ul class="pagination justify-content-center align-items-center flex-wrap gap-1">
             
-            <!-- Aller à la première page -->
             {% if page_obj.has_previous and page_obj.number != 1 %}
                 <li class="page-item">
                     <a class="page-link custom-page-link" href="?page=1{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}" title="Première page">
@@ -154,7 +154,6 @@
                 </li>
             {% endif %}
 
-            <!-- Page précédente -->
             {% if page_obj.has_previous %}
                 <li class="page-item">
                     <a class="page-link custom-page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">
@@ -163,14 +162,12 @@
                 </li>
             {% endif %}
 
-            <!-- Indicateur de progression (Page X sur Y) -->
             <li class="mx-3 text-center dropdown-pagination-info">
                 <span class="dynamic-text fw-bold small">
                     Page {{ page_obj.number }} <span class="opacity-50 font-normal">sur</span> {{ page_obj.paginator.num_pages }}
                 </span>
             </li>
 
-            <!-- Page suivante -->
             {% if page_obj.has_next %}
                 <li class="page-item">
                     <a class="page-link custom-page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">
@@ -179,7 +176,6 @@
                 </li>
             {% endif %}
 
-            <!-- Aller à la dernière page -->
             {% if page_obj.has_next and page_obj.number != page_obj.paginator.num_pages %}
                 <li class="page-item">
                     <a class="page-link custom-page-link" href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}" title="Dernière page ({{ page_obj.paginator.num_pages }})">
@@ -191,7 +187,6 @@
     </nav>
     {% endif %}
 
-    <!-- Section Commentaires Récents -->
     <div class="mt-5 p-4 rounded-4 dynamic-card border border-secondary border-opacity-10">
         <h5 class="dynamic-text fw-bold mb-4"><i class="bi bi-chat-left-dots text-info-custom me-2"></i>RETOUR RÉSEAU</h5>
         <div class="row">
@@ -251,6 +246,14 @@
     /* Style spécifique à la bannière d'onboarding */
     .onboarding-banner {
         border-style: dashed !important; /* Pour un look terminal/veille plus identifié */
+    }
+
+    /* Animation et comportement de l'image de couverture */
+    .img-cover-transition {
+        transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .card-premium:hover .img-cover-transition {
+        transform: scale(1.05);
     }
 
     /* Bouton d'exploration adaptatif */
