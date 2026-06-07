@@ -90,6 +90,22 @@ def profile(request):
 def article_detail(request, pk):
     article = get_object_or_404(Article, pk=pk)
     comments = article.comments.all().order_by('-created_at')
+
+    if request.user.is_authenticated:
+        liked_comment_ids = CommentLike.objects.filter(
+            user=request.user,
+            comment__article=article
+        ).values_list('comment_id', flat=True)
+
+        for comment in comments:
+            comment.is_liked = comment.id in liked_comment_ids
+
+        has_commented = comments.filter(author=request.user).exists()
+    else:
+        for comment in comments:
+            comment.is_liked = False
+
+        has_commented = False
     
     if request.method == 'POST':
         # On vérifie d'abord que l'utilisateur est bien connecté
@@ -116,7 +132,8 @@ def article_detail(request, pk):
     return render(request, 'news/article_detail.html', {
         'article': article,
         'comments': comments,
-        'form': form
+        'form': form,
+        'has_commented': has_commented,
     })
 
 @login_required

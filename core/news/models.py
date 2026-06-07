@@ -49,6 +49,12 @@ class Comment(models.Model):
     class Meta:
         ordering = ['-created_at'] # Le plus récent en premier
 
+    def is_liked_by(self, user):
+        if not user.is_authenticated:
+            return False
+        
+        return self.likes.filter(user=user).exists()
+
     def __str__(self):
         return f"Commentaire de {self.author.username} sur {self.article.title}"
     

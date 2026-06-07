@@ -65,9 +65,15 @@
                                 {{ form.content }}
                             </div>
                             <div class="text-end">
-                                <button type="submit" class="btn btn-info px-5 fw-bold rounded-pill text-dark shadow-sm">
-                                    PUBLIER L'ANALYSE
-                                </button>
+                                {% if has_commented %}
+                                    <button type="submit" class="btn btn-success px-5 fw-bold rounded-pill text-white shadow-sm">
+                                        <i class="bi bi-plus-circle me-1"></i> AJOUTER UNE NOUVELLE ANALYSE
+                                    </button>
+                                {% else %}
+                                    <button type="submit" class="btn btn-info px-5 fw-bold rounded-pill text-dark shadow-sm">
+                                        PUBLIER L'ANALYSE
+                                    </button>
+                                {% endif %}
                             </div>
                         </form>
                     </div>
@@ -98,10 +104,17 @@
                             
                             <div class="d-flex align-items-center gap-2">
                                 <a href="{% url 'like_comment' comment.id %}" class="text-decoration-none">
-                                    <button class="btn btn-sm btn-info text-dark fw-bold rounded-pill px-3 shadow-sm">
-                                        <i class="bi bi-hand-thumbs-up-fill me-1"></i>
-                                        {{ comment.likes.count }}
-                                    </button>
+                                    {% if comment.is_liked %}
+                                        <button class="btn btn-sm btn-success text-white fw-bold rounded-pill px-3 shadow-sm">
+                                            <i class="bi bi-hand-thumbs-up-fill me-1"></i>
+                                            {{ comment.likes.count }}
+                                        </button>
+                                    {% else %}
+                                        <button class="btn btn-sm btn-info text-dark fw-bold rounded-pill px-3 shadow-sm">
+                                            <i class="bi bi-hand-thumbs-up-fill me-1"></i>
+                                            {{ comment.likes.count }}
+                                        </button>
+                                    {% endif %}
                                 </a>
                                 
                                 {% if user.is_authenticated and comment.author == user or request.user.is_staff %}
