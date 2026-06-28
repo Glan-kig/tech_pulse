@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 from django.contrib.auth.models import User
 from django.utils import timezone
 from datetime import timedelta
@@ -17,10 +18,14 @@ class Article(models.Model):
     ai_summary =  models.TextField(blank=True, null=True)
 
     image_url = models.URLField(max_length=2000, blank=True, null=True)
+    slug = models.SlugField(max_length=200, unique=True, null=True, blank=True)
 
     @property
     def is_new(self):
         return self.created_at >= timezone.now() - timedelta(hours=24)
+    
+    def get_absolute_url(self):
+        return reverse("article_detail", kwargs={"pk": self.pk})
 
     def __str__(self):
         return self.title

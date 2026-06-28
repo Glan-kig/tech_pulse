@@ -2,7 +2,15 @@ from django.views.generic.base import RedirectView
 from django.conf import settings
 from django.urls import path
 from django.views.generic import TemplateView
+from django.contrib.sitemaps.views import sitemap
 from . import views
+from news.sitemaps import (
+    ArticleSitemap,
+)
+
+sitemaps = {
+    "articles": ArticleSitemap,
+}
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -22,5 +30,11 @@ urlpatterns = [
             template_name="googlee536a5e64b4fa2b6.html",
             content_type="text/html",
         ),
+    ),
+    path(
+        "sitemap.xml",
+        sitemap,
+        {"sitemaps": sitemaps},
+        name="django.contrib.sitemaps.views.sitemap",
     ),
 ]
