@@ -20,5 +20,6 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')), # Inclut les URLs d'authentification de Django (login, logout, password reset, etc.)
+    path('accounts/', include('allauth.urls')),
     path('', include('news.urls')), # On branche l'accueil de notre site sur les URLs définies dans news/urls.py
 ]

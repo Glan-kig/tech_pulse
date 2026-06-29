@@ -1,5 +1,7 @@
 {% extends 'news/base.html' %}
 
+{% load socialaccount %}
+
 {% block title %}Connexion - TechPulse{% endblock %}
 
 {% block content %}
@@ -16,6 +18,21 @@
                     </div>
                     <h2 class="fw-bold dynamic-text mb-1 text-uppercase" style="letter-spacing: 1px;">Connexion</h2>
                     <p class="text-info-custom small fw-bold opacity-75 text-uppercase" style="letter-spacing: 0.5px;">TechPulse Terminal v1.0</p>
+                </div>
+
+                <!-- Bouton de connexion Google direct -->
+                <div class="d-grid gap-2 mb-4">
+                    <a href="{% provider_login_url 'google' %}" class="btn btn-google-custom py-3 rounded-3 fw-bold text-uppercase shadow-sm d-flex align-items-center justify-content-center border transition-all">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" style="width: 18px; margin-right: 10px;">
+                        Se connecter avec Google
+                    </a>
+                </div>
+
+                <!-- Séparateur visuel -->
+                <div class="d-flex align-items-center my-4 text-uppercase opacity-50" style="font-size: 0.75rem; letter-spacing: 1px;">
+                    <hr class="flex-grow-1 border-secondary m-0">
+                    <span class="px-3 dynamic-text fw-bold">ou</span>
+                    <hr class="flex-grow-1 border-secondary m-0">
                 </div>
 
                 <form method="post">
@@ -77,6 +94,28 @@
     .dynamic-text { color: var(--text-main) !important; transition: color 0.4s ease; }
     .dynamic-muted { color: var(--text-muted) !important; transition: color 0.4s ease; }
 
+    /* Style adaptatif Bouton Google (Arrondi en rounded-3 pour matcher avec le style terminal de cette carte) */
+    .btn-google-custom {
+        background-color: rgba(255, 255, 255, 0.03) !important;
+        border-color: var(--border-color) !important;
+        color: var(--text-main) !important;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+    }
+    body.light-mode .btn-google-custom {
+        background-color: #ffffff !important;
+        border-color: rgba(0, 0, 0, 0.12) !important;
+        color: #1b1b1b !important;
+    }
+    .btn-google-custom:hover {
+        background-color: rgba(255, 255, 255, 0.08) !important;
+        transform: translateY(-1px);
+    }
+    body.light-mode .btn-google-custom:hover {
+        background-color: #f7f7f7 !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+    }
+
     /* Couleur Info adaptative (Bleu liseuse en clair, Cyan en sombre) */
     .text-info-custom { color: #0ea5e9 !important; transition: color 0.4s ease; }
     body.light-mode .text-info-custom { color: #0284c7 !important; }
@@ -88,7 +127,7 @@
         transition: all 0.3s ease;
     }
     body.light-mode .input-group-custom {
-        background: #ffffff !important; /* Fond blanc pur sur papier mat */
+        background: #ffffff !important; 
         border: 1px solid rgba(0, 0, 0, 0.12) !important;
     }
     

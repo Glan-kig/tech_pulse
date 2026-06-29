@@ -50,6 +50,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     "django.contrib.sites",
     "django.contrib.sitemaps",
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+
+    # Le fournisseur spécifique pour Google
+    'allauth.socialaccount.providers.google',
+
     'news.apps.NewsConfig',
 ]
 
@@ -64,6 +71,14 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "allauth.account.middleware.AccountMiddleware",
+]
+
+AUTHENTICATION_BACKENDS = [
+    # Permet de se connecter via l'admin Django traditionnel avec un mot de passe
+    'django.contrib.auth.backends.ModelBackend',
+    # Permet l'authentification spécifique d'allauth (comme la connexion Google)
+    'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -142,9 +157,27 @@ USE_I18N = True
 
 USE_TZ = True
 
+ACCOUNT_EMAIL_VERIFICATION = "none" # Pas de mail de vérification requis pour le dev
+ACCOUNT_EMAIL_REQUIRED = True
+
+SOCIALACCOUNT_LOGIN_ON_GET = True
 
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
+
+# Configuration du fournisseur Google
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        },
+        'OAUTH_PKCE_ENABLED': True,
+    }
+}
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
