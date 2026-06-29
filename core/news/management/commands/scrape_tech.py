@@ -35,8 +35,8 @@ class Command(BaseCommand):
         # Liste de mots-clés à ignorer absolument (Gaming, Culture Pop, etc.)
         BLACKLIST = [
             "wow", "world of warcraft", "one piece", "anime", "manga", "film", "série", 
-            "netflix", "disney+", "jeu vidéo", "ps5", "xbox", "nintendo", "booster", 
-            "reacher", "acteur", "cinéma", "gaming", "zelda", "elden ring", "cyberpunk", "gta", 
+            "disney+", "jeu vidéo", "booster", 
+            "reacher", "acteur", "cinéma", "gaming", "zelda", "elden ring", 
             "call of duty", "fifa", "fortnite", "league of legends", "valorant", "overwatch", 
             "minecraft", "roblox", "assassin's creed", "horizon zero dawn", "star wars", "marvel", 
             "dc comics", "avengers", "spiderman", "batman", "superman", "iron man", "thor", "hulk",
