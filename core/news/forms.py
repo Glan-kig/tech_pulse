@@ -1,4 +1,6 @@
 from django import forms
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
 from .models import Comment
 from django.contrib.auth.forms import PasswordChangeForm
 
@@ -20,3 +22,10 @@ class MyPasswordChangeForm(PasswordChangeForm):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
             field.widget.attrs.update({'class': 'form-control'}) # Pour Bootstrap ou ton CSS
+
+class CustomRegisterForm(UserCreationForm):
+    email = forms.EmailField(required=True, label="Adresse E-mail")
+
+    class Meta(UserCreationForm.Meta):
+        model = User
+        fields = UserCreationForm.Meta.fields + ('email', )

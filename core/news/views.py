@@ -7,7 +7,7 @@ from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.core.paginator import Paginator
 from .models import Article, Category, Favorite, Comment, CommentLike
-from .forms import CommentForm, MyPasswordChangeForm
+from .forms import CommentForm, MyPasswordChangeForm, CustomRegisterForm
 
 def home(request):
     query = request.GET.get('q') # Récupération de la requête de recherche depuis les paramètres de la requête
@@ -56,13 +56,13 @@ def home(request):
 
 def register(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = CustomRegisterForm(request.POST)
         if form.is_valid():
             user = form.save()
             login(request, user) # Connecte automatiquement l'utilisateur après l'inscription
             return redirect('home') # Redirige vers la page d'accueil après l'inscription
     else:
-        form = UserCreationForm()
+        form = CustomRegisterForm()
     return render(request, 'registration/register.html', {'form': form})
 
 @login_required
