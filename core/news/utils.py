@@ -29,9 +29,9 @@ def generate_ai_summary(text) -> str:
                     "content": f"Voici l'article à résumer : {text_clean}"
                 }
             ],
-            model="llama-3.1-8b-instant",
-            temperature=0.3,
-            max_tokens=250
+            model="openai/gpt-oss-120b",
+            temperature=0.2,
+            max_tokens=300
         )
 
         summary = chat_completion.choices[0].message.content
