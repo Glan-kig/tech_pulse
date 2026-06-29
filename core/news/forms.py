@@ -29,3 +29,19 @@ class CustomRegisterForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = User
         fields = UserCreationForm.Meta.fields + ('email', )
+
+class ContactForm(forms.Form):
+    name = forms.CharField(
+        max_length=100, 
+        widget=forms.TextInput(attrs={'placeholder': "Votre nom ou pseudonyme"})
+    )
+    email = forms.EmailField(
+        widget=forms.EmailInput(attrs={'placeholder': "votre.email@exemple.com"})
+    )
+    subject = forms.CharField(
+        max_length=200, 
+        widget=forms.TextInput(attrs={'placeholder': "Le sujet de votre message"})
+    )
+    message = forms.CharField(
+        widget=forms.Textarea(attrs={'rows': 5, 'placeholder': "Initialisez votre message ici..."})
+    )

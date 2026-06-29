@@ -1,13 +1,14 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.forms import UserCreationForm
+from django.core.mail import send_mail
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, update_session_auth_hash
 from django.contrib import messages
 from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.core.paginator import Paginator
+from django.conf import settings
 from .models import Article, Category, Favorite, Comment, CommentLike
-from .forms import CommentForm, MyPasswordChangeForm, CustomRegisterForm
+from .forms import CommentForm, MyPasswordChangeForm, CustomRegisterForm, ContactForm
 
 def home(request):
     query = request.GET.get('q') # Récupération de la requête de recherche depuis les paramètres de la requête
@@ -46,10 +47,91 @@ def home(request):
         for article in page_obj:
             article.is_favorited = False
 
+    # --- LOGIQUE DU FORMULAIRE DE CONTACT ---
+    if request.method == 'POST' and 'contact_submit' in request.POST:
+        contact_form = ContactForm(request.POST)
+        if contact_form.is_valid():
+            user_name = contact_form.cleaned_data['name']
+            user_email = contact_form.cleaned_data['email']
+            user_subject = contact_form.cleaned_data['subject']
+            user_message = contact_form.cleaned_data['message']
+            
+            # 1. Sujet de l'e-mail dans ta boîte de réception
+            email_subject = f"[TechPulse Terminal] {user_subject}"
+            
+            # 2. Message de secours en texte brut (obligatoire pour Django)
+            email_body_brut = f"Nouveau message de {user_name} ({user_email}):\n\n{user_message}"
+            
+            # 3. Ton interface de rapport système premium
+            html_message = f"""
+            <div style="background-color: #0b0e14; padding: 35px 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+                <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; background-color: #11151c; border: 1px solid #222936; border-radius: 12px; overflow: hidden;">
+                    
+                    <tr>
+                        <td style="padding: 30px 35px; border-bottom: 1px solid #1f2633; background-color: #0e1219;">
+                            <span style="font-family: 'Courier New', Courier, monospace; color: #f59e0b; font-weight: bold; font-size: 13px; letter-spacing: 1px; display: block; margin-bottom: 5px;">
+                                [!] INCOMING_TRANSMISSION_RECEIVED
+                            </span>
+                            <h1 style="color: #ffffff; font-size: 20px; font-weight: 700; margin: 0;">Alerte Contact Client</h1>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td style="padding: 25px 35px 15px 35px;">
+                            <table width="100%" style="background-color: #161c26; border-radius: 6px; padding: 15px;">
+                                <tr>
+                                    <td style="color: #94a3b8; font-size: 13px; padding-bottom: 5px;"><strong>Expéditeur :</strong> {user_name}</td>
+                                </tr>
+                                <tr>
+                                    <td style="color: #94a3b8; font-size: 13px;"><strong>Adresse e-mail :</strong> <a href="mailto:{user_email}" style="color: #0ea5e9; text-decoration: none;">{user_email}</a></td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td style="padding: 10px 35px 35px 35px;">
+                            <h3 style="color: #ffffff; font-size: 15px; margin-top: 0; margin-bottom: 10px; border-bottom: 1px solid #1f2633; padding-bottom: 8px;">
+                                Objet : {user_subject}
+                            </h3>
+                            <p style="color: #e2e8f0; font-size: 14px; line-height: 1.6; white-space: pre-line; background-color: rgba(255,255,255,0.02); padding: 15px; border-radius: 6px; border-left: 3px solid #0ea5e9; margin: 0;">
+                                {user_message}
+                            </p>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td style="padding: 20px 35px; border-top: 1px solid #1f2633; background-color: #0e1219; text-align: center;">
+                            <p style="font-size: 11px; font-family: 'Courier New', Courier, monospace; color: #475569; margin: 0; text-transform: uppercase;">
+                                TechPulse Admin Core v1.0
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            """
+            
+            try:
+                send_mail(
+                    email_subject,
+                    email_body_brut,
+                    settings.DEFAULT_FROM_EMAIL,
+                    [settings.EMAIL_HOST_USER], # C'est envoyé vers TA propre adresse
+                    html_message=html_message,
+                    fail_silently=False,
+                )
+                messages.success(request, "Transmission réussie ! Votre message a bien été injecté dans le terminal de l'administrateur.")
+                return redirect('home')
+            except Exception as e:
+                messages.error(request, f"Échec de l'envoi du message : {e}")
+    else:
+        contact_form = ContactForm()
+
     content = {
         'page_obj' : page_obj,
         'categories': categories,
         'recent_comments' : recent_comments,
+        'contact_form': contact_form,
     }
 
     return render(request, 'news/home.html', content)

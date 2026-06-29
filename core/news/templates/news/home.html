@@ -6,14 +6,13 @@
 <div class="container py-4">
 
     <div class="row justify-content-center mb-4">
-        <div class="col-lg-10">
-            <div class="p-4 rounded-4 dynamic-sub-bg border border-secondary border-opacity-10 d-flex align-items-start gap-3 onboarding-banner shadow-sm">
-                <div class="p-2.5 rounded-3 bg-info-custom-translucent text-info-custom">
-                    <i class="bi bi-terminal-flash fs-4"></i>
+        <div class="col-lg-12 col-xl-11"> <div class="p-4 p-md-5 rounded-4 dynamic-sub-bg border border-secondary border-opacity-10 d-flex align-items-start gap-4 onboarding-banner shadow-sm">
+                <div class="p-3 rounded-3 bg-info-custom-translucent text-info-custom d-flex align-items-center justify-content-center">
+                    <i class="bi bi-terminal-flash fs-3"></i>
                 </div>
                 <div>
-                    <h5 class="fw-bold dynamic-text mb-1 small text-uppercase" style="letter-spacing: 0.5px;">À propos de TechPulse</h5>
-                    <p class="dynamic-muted mb-0 small" style="line-height: 1.5;">
+                    <h5 class="fw-bold dynamic-text mb-2 small text-uppercase" style="letter-spacing: 0.5px;">À propos de TechPulse</h5>
+                    <p class="dynamic-muted mb-0" style="line-height: 1.6; font-size: 0.95rem;">
                         TechPulse est votre veille technologique automatisée. L'application agrège et synthétise les dernières innovations mondiales. 
                         <strong>Comment l'utiliser ?</strong> Explorez le flux ci-dessous, utilisez la barre de recherche pour filtrer par mots-clés ou catégories, lisez les résumés générés par IA en ouvrant les détails, et sauvegardez vos articles favoris dans votre bibliothèque personnelle.
                     </p>
@@ -145,7 +144,6 @@
     {% if page_obj.paginator.num_pages > 1 %}
     <nav aria-label="Page navigation" class="mt-5 mb-3">
         <ul class="pagination justify-content-center align-items-center flex-wrap gap-1">
-            
             {% if page_obj.has_previous and page_obj.number != 1 %}
                 <li class="page-item">
                     <a class="page-link custom-page-link" href="?page=1{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}" title="Première page">
@@ -208,6 +206,96 @@
     </div>
 </div>
 
+<div class="container my-5 pt-4 fade-in">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-10">
+            
+            <div class="card border-0 rounded-4 overflow-hidden dynamic-card position-relative p-4 p-md-5">
+                
+                <div class="row align-items-center mb-5">
+                    <div class="col-md-7">
+                        <span class="font-monospace text-info-custom small fw-bold text-uppercase d-block mb-2" style="letter-spacing: 1.5px;">
+                            &gt;_ TRANSMISSION_CORE
+                        </span>
+                        <h2 class="fw-bold dynamic-text text-uppercase mb-2" style="letter-spacing: 1px;">Contacter le Hub</h2>
+                        <p class="dynamic-muted mb-md-0 small">Une suggestion, une idée ou un rapport d'anomalie ? Initialisez une liaison directe vers le terminal de l'administrateur.</p>
+                    </div>
+                    <div class="col-md-5 text-md-end text-start mt-3 mt-md-0">
+                        <div class="d-inline-flex align-items-center gap-2 px-3 py-2 border rounded-3 dynamic-muted font-monospace small bg-opacity-10 bg-white">
+                            <i class="bi bi-cpu-fill text-info-custom animate-pulse"></i> Status: Online
+                        </div>
+                    </div>
+                </div>
+
+                <form method="post">
+                    {% csrf_token %}
+
+                    <!-- ALERTE DE CONFIRMATION DJANGO MESSAGES -->
+                    {% if messages %}
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                {% for message in messages %}
+                                    <div class="alert alert-dismissible fade show border-0 rounded-3 p-3 d-flex align-items-center gap-3 {% if message.tags == 'success' %}alert-cyber-success{% else %}bg-secondary text-white{% endif %}" role="alert">
+                                        <div class="p-2 rounded-2 bg-success-translucent text-success-custom">
+                                            <i class="bi bi-shield-check fs-4"></i>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <span class="font-monospace small fw-bold d-block text-success-custom mb-0" style="letter-spacing: 1px;">&gt;_ STATUS_OK</span>
+                                            <p class="mb-0 small dynamic-text fw-medium">{{ message }}</p>
+                                        </div>
+                                        <button type="button" class="btn-close btn-close-custom m-0 shadow-none" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+                    
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold text-info-custom mb-2 text-uppercase font-monospace" style="font-size: 0.75rem;">01. Identifiant / Nom</label>
+                            <div class="input-group-custom border rounded-3 px-3 py-2 d-flex align-items-center">
+                                <i class="bi bi-person-bounding-box dynamic-muted me-2"></i>
+                                <input type="text" name="name" required placeholder="Saisissez votre nom ou pseudo" id="id_name">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold text-info-custom mb-2 text-uppercase font-monospace" style="font-size: 0.75rem;">02. Point de routage (Email)</label>
+                            <div class="input-group-custom border rounded-3 px-3 py-2 d-flex align-items-center">
+                                <i class="bi bi-envelope dynamic-muted me-2"></i>
+                                <input type="email" name="email" required placeholder="votre.email@exemple.com" id="id_email">
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label small fw-bold text-info-custom mb-2 text-uppercase font-monospace" style="font-size: 0.75rem;">03. En-tête du paquet (Sujet)</label>
+                            <div class="input-group-custom border rounded-3 px-3 py-2 d-flex align-items-center">
+                                <i class="bi bi-terminal-dash dynamic-muted me-2"></i>
+                                <input type="text" name="subject" required placeholder="Spécifiez l'objet de votre transmission" id="id_subject">
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label small fw-bold text-info-custom mb-2 text-uppercase font-monospace" style="font-size: 0.75rem;">04. Charge utile (Message)</label>
+                            <div class="input-group-custom border rounded-3 px-3 py-2 d-flex align-items-start">
+                                <i class="bi bi-chat-left-text dynamic-muted me-2 mt-1"></i>
+                                <textarea name="message" cols="40" rows="5" required placeholder="Écrivez votre message ici..." id="id_message" class="w-100 border-0 bg-transparent outline-none dynamic-text-input" style="outline: none; resize: none;"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-end mt-4 pt-2">
+                        <button type="submit" name="contact_submit" class="btn btn-transmission-submit px-5 py-3 rounded-3 fw-bold text-uppercase" style="letter-spacing: 1px; font-size: 0.85rem;">
+                            <i class="bi bi-send-fill me-2"></i> Exécuter la transmission
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
 <style>
     /* Intégration fine avec les variables du thème global */
     .dynamic-card {
@@ -221,7 +309,7 @@
         transition: background-color 0.4s ease;
     }
     body.light-mode .dynamic-sub-bg {
-        background-color: #ededed !important; /* Gris mat ultra-doux */
+        background-color: #ededed !important;
     }
 
     .dynamic-text { color: var(--text-main) !important; transition: color 0.4s ease; }
@@ -243,9 +331,17 @@
         background: rgba(2, 132, 199, 0.08);
     }
 
-    /* Style spécifique à la bannière d'onboarding */
+    /* Style spécifique et adaptatif de la bannière d'onboarding */
     .onboarding-banner {
-        border-style: dashed !important; /* Pour un look terminal/veille plus identifié */
+        border-style: dashed !important;
+    }
+    /* Comportement responsive pour l'onboarding sur les petits mobiles */
+    @media (max-width: 576px) {
+        .onboarding-banner {
+            flex-direction: column;
+            gap: 15px !important;
+            padding: 20px !important;
+        }
     }
 
     /* Animation et comportement de l'image de couverture */
@@ -380,11 +476,91 @@
         color: var(--text-main) !important;
     }
 
+    /* STYLE SPECIFIQUE DU BOUTON TRANSMISSION (LUMIÈRE NEON EN MODE SOMBRE) */
+    .btn-transmission-submit {
+        background-color: #0ea5e9;
+        color: #0b0e14 !important;
+        border: none;
+        box-shadow: 0 0 15px rgba(14, 165, 233, 0.4);
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .btn-transmission-submit:hover {
+        background-color: #38bdf8;
+        transform: translateY(-2px);
+        box-shadow: 0 0 25px rgba(56, 189, 248, 0.7);
+    }
+    /* Version contrastée et lisible pour le mode clair */
+    body.light-mode .btn-transmission-submit {
+        background-color: #0284c7;
+        color: #ffffff !important;
+        box-shadow: 0 4px 10px rgba(2, 132, 199, 0.2);
+    }
+    body.light-mode .btn-transmission-submit:hover {
+        background-color: #0369a1;
+        box-shadow: 0 6px 15px rgba(2, 132, 199, 0.35);
+    }
+
     @media (max-width: 768px) {
         .search-bar-container { flex-direction: column; align-items: stretch !important; }
         .btn-explorer { margin: 10px 0 0 0 !important; width: 100%; }
         .border-end { border: none !important; border-bottom: 1px solid var(--border-color) !important; }
         .dropdown-pagination-info { width: 100%; order: -1; margin-bottom: 10px; }
+    }
+
+    /* Permet aux inputs manuels de matcher parfaitement avec le style global */
+    .input-group-custom input {
+        border: none !important;
+        background: transparent !important;
+        color: var(--text-main) !important;
+        width: 100%;
+        outline: none !important;
+        font-weight: 500;
+    }
+    
+    .input-group-custom input::placeholder, 
+    .input-group-custom textarea::placeholder { 
+        color: var(--text-muted) !important; 
+        opacity: 0.6;
+    }
+    
+    .dynamic-text-input {
+        color: var(--text-main) !important;
+    }
+
+    @keyframes pulse {
+        0% { opacity: 0.4; }
+        50% { opacity: 1; }
+        100% { opacity: 0.4; }
+    }
+    .animate-pulse {
+        animation: pulse 2s infinite ease-in-out;
+    }
+
+    /* STYLE ALERT CYBER CONFIRMATION */
+    .alert-cyber-success {
+        background-color: rgba(16, 185, 129, 0.05) !important;
+        border: 1px solid rgba(16, 185, 129, 0.2) !important;
+    }
+    
+    .text-success-custom {
+        color: #10b981 !important;
+    }
+    
+    .bg-success-translucent {
+        background-color: rgba(16, 185, 129, 0.1) !important;
+    }
+    
+    /* Bouton de fermeture adaptatif */
+    .btn-close-custom {
+        font-size: 0.75rem;
+        opacity: 0.5;
+        transition: opacity 0.2s ease;
+    }
+    body:not(.light-mode) .btn-close-custom {
+        filter: invert(1); /* Devient blanc en mode sombre */
+    }
+    .btn-close-custom:hover {
+        opacity: 1;
     }
 </style>
 {% endblock %}
