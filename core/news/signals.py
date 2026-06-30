@@ -7,8 +7,8 @@ import threading
 
 @receiver(post_save, sender=User)
 def send_welcome_email(sender, instance, created, **kwargs):
-    # 'created' est True uniquement s'il s'agit d'une insertion (première inscription)
-    if created:
+    print(f"[SIGNAL TRIGGERED] Signal lancé pour l'user : {instance.username}, Created = {created}")
+    if created and instance.email:
         subject = "Bienvenue sur TechPulse !"
 
         message = ""
@@ -84,9 +84,7 @@ def send_welcome_email(sender, instance, created, **kwargs):
             except Exception as e:
                 print(f"[Thread] Erreur lors de l'envoi du mail de bienvenue : {e}")
         
-        # On vérifie que l'utilisateur a bien un e-mail (inscription classique ou via Google)
-        if instance.email:
-            threading.Thread(
+        threading.Thread(
                 target=_execute_email_send
             ).start()
                    
