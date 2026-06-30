@@ -3,6 +3,7 @@ from django.dispatch import receiver
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.conf import settings
+import threading
 
 @receiver(post_save, sender=User)
 def send_welcome_email(sender, instance, created, **kwargs):
@@ -68,9 +69,8 @@ def send_welcome_email(sender, instance, created, **kwargs):
         
         # Extraction de l'adresse email de l'utilisateur
         recipient_list = [instance.email]
-        
-        # On vérifie que l'utilisateur a bien un e-mail (inscription classique ou via Google)
-        if instance.email:
+
+        def _execute_email_send():
             try:
                 send_mail(
                     subject=subject,
@@ -78,9 +78,15 @@ def send_welcome_email(sender, instance, created, **kwargs):
                     from_email=settings.DEFAULT_FROM_EMAIL,
                     recipient_list=recipient_list,
                     html_message=html_message,
-                    fail_silently=True,
+                    fail_silently=False  # False ici pour capturer l'erreur dans notre bloc except
                 )
-                print(f"E-mail de bienvenue envoyé avec succès à {instance.email} !")
+                print(f"[Thread] E-mail de bienvenue envoyé avec succès à {instance.email} !")
             except Exception as e:
-                # Évite de faire planter l'inscription si l'envoi d'email échoue
-                print(f"Erreur lors de l'envoi du mail de bienvenue : {e}")
+                print(f"[Thread] Erreur lors de l'envoi du mail de bienvenue : {e}")
+        
+        # On vérifie que l'utilisateur a bien un e-mail (inscription classique ou via Google)
+        if instance.email:
+            threading.Thread(
+                target=_execute_email_send
+            ).start()
+                   
