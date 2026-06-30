@@ -223,6 +223,8 @@ if not DEBUG:
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_HTTPONLY = True
     CSRF_COOKIE_SECURE = True
+    
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     # X_FRAME_OPTIONS = 'DENY'
     # Force le https si tu as un certificat SSL
     # SECURE_SSL_REDIRECT = True

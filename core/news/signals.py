@@ -12,7 +12,7 @@ def send_welcome_email(request, user, **kwargs):
     # Pas besoin de 'created', ce signal ne se déclenche QUE pour les nouvelles inscriptions
     if user.email:
         subject = "Bienvenue sur TechPulse !"
-        message =""
+        message = f"Bonjour {user.username}, bienvenue sur TechPulse !"
         
         # Message au format HTML poli style terminal premium
         html_message = f"""
