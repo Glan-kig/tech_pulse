@@ -78,7 +78,7 @@ def send_welcome_email(sender, instance, created, **kwargs):
                     from_email=settings.DEFAULT_FROM_EMAIL,
                     recipient_list=recipient_list,
                     html_message=html_message,
-                    fail_silently=False,
+                    fail_silently=True,
                 )
                 print(f"E-mail de bienvenue envoyé avec succès à {instance.email} !")
             except Exception as e:

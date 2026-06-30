@@ -157,7 +157,8 @@ USE_I18N = True
 
 USE_TZ = True
 
-ACCOUNT_AUTHENTICATION_METHOD = "username_email"
+ACCOUNT_LOGIN_METHODS = {'email', 'username'}
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'username*', 'password1*', 'password2*']
 
 ACCOUNT_EMAIL_VERIFICATION = "none" # Pas de mail de vérification requis pour le dev
 ACCOUNT_EMAIL_REQUIRED = True
