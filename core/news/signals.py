@@ -1,11 +1,11 @@
-from django.db.models.signals import post_save
+from allauth.account.signals import user_signed_up
 from django.dispatch import receiver
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.conf import settings
 import threading
 
-@receiver(post_save, sender=User)
+@receiver(user_signed_up)
 def send_welcome_email(sender, instance, created, **kwargs):
     print(f"[SIGNAL TRIGGERED] Signal lancé pour l'user : {instance.username}, Created = {created}")
     if created and instance.email:
