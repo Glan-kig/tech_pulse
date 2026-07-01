@@ -164,6 +164,8 @@ ACCOUNT_EMAIL_VERIFICATION = "none" # Pas de mail de vérification requis pour l
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
 
+EMAIL_TIMEOUT = 60
+
 SOCIALACCOUNT_LOGIN_ON_GET = True
 SOCIALACCOUNT_AUTO_SIGNUP = True
 SOCIALACCOUNT_ADAPTER = 'allauth.socialaccount.adapter.DefaultSocialAccountAdapter'
