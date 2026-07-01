@@ -9,6 +9,7 @@ from django.core.paginator import Paginator
 from django.conf import settings
 from .models import Article, Category, Favorite, Comment, CommentLike
 from .forms import CommentForm, MyPasswordChangeForm, CustomRegisterForm, ContactForm
+import threading
 
 def home(request):
     query = request.GET.get('q') # Récupération de la requête de recherche depuis les paramètres de la requête
@@ -111,19 +112,22 @@ def home(request):
             </div>
             """
             
-            try:
-                send_mail(
-                    email_subject,
-                    email_body_brut,
-                    settings.DEFAULT_FROM_EMAIL,
-                    [settings.EMAIL_HOST_USER], # C'est envoyé vers TA propre adresse
-                    html_message=html_message,
-                    fail_silently=False,
-                )
-                messages.success(request, "Transmission réussie ! Votre message a bien été injecté dans le terminal de l'administrateur.")
-                return redirect('home')
-            except Exception as e:
-                messages.error(request, f"Échec de l'envoi du message : {e}")
+            def _execute_email_send():
+                try:
+                    send_mail(
+                        email_subject,
+                        email_body_brut,
+                        settings.DEFAULT_FROM_EMAIL,
+                        [settings.EMAIL_HOST_USER], # C'est envoyé vers TA propre adresse
+                        html_message=html_message,
+                        fail_silently=False,
+                    )
+                
+                except Exception as e:
+                    messages.error(request, f"Échec de l'envoi du message : {e}")
+            messages.success(request, "Transmission réussie ! Votre message a bien été injecté dans le terminal de l'administrateur.")
+            threading.Thread(target=_execute_email_send).start()
+            return redirect('home')
     else:
         contact_form = ContactForm()
 
