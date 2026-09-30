@@ -1,10 +1,10 @@
 from rest_framework import viewsets, permissions, status, generics
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.generics import ListAPIView
 from django_q.tasks import async_task
 from django.db.models import Q
-from django.core.mail import send_mail
-from django.conf import settings
 from .models import (
     Article, Category, Comment, 
     Favorite, CommentLike, Contact
@@ -22,9 +22,17 @@ class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [permissions.AllowAny]
 
 
+class StandardPagination(PageNumberPagination):
+    page_size = 6
+    page_size_query_param = 'page_size'
+    max_page_size = 100
+    
+
 class ArticleViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = ArticleSerializer
     permission_classes = [permissions.AllowAny]
+
+    pagination_class = StandardPagination
 
     def get_queryset(self):
         queryset = Article.objects.all().order_by('-created_at').prefetch_related('sources')
@@ -47,6 +55,24 @@ class ArticleViewSet(viewsets.ReadOnlyModelViewSet):
             return Response({'status': 'unfavorited'}, status=status.HTTP_200_OK)
         return Response({'status': 'favorited'}, status=status.HTTP_201_CREATED)
 
+
+class ArticleListView(ListAPIView):
+    serializer_class = ArticleSerializer
+    pagination_class = StandardPagination
+
+    def get_queryset(self):
+        queryset = Article.objects.all().order_by('-created_at')
+        
+        # Gestion des filtres optionnels
+        category = self.request.query_params.get('category')
+        query = self.request.query_params.get('q')
+
+        if category:
+            queryset = queryset.filter(category_id=category)
+        if query:
+            queryset = queryset.filter(title__icontains=query)
+
+        return queryset
 
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all().order_by('-created_at')

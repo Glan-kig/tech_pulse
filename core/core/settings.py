@@ -21,6 +21,8 @@ CSRF_TRUSTED_ORIGINS = [
     'https://techpulse-w97t.onrender.com',
     'http://localhost:3000',
     'http://127.0.0.1:3000',
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
 ]
 
 # Application definition
@@ -93,6 +95,8 @@ REST_FRAMEWORK = {
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
 ] + env_origins
 
 ROOT_URLCONF = 'core.urls'
