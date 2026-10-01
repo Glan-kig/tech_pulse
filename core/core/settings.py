@@ -15,7 +15,9 @@ ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost 127.0.0.1").split(" ")
 
 env_origins = os.getenv("CORS_ALLOWED", "http://localhost:8000").split(" ")
 env_origins = [origin.strip() for origin in env_origins if origin.strip()]
-THIS_HOST = os.getenv("THIS_HOST", "").split(" ")
+
+host_origins = os.getenv("THIS_HOST", "http://localhost:8000").split(" ")
+host_origins = [host.strip() for host in host_origins if host.strip()]
 
 CSRF_TRUSTED_ORIGINS = [
     'https://techpulse-w97t.onrender.com',
@@ -23,7 +25,7 @@ CSRF_TRUSTED_ORIGINS = [
     'http://127.0.0.1:3000',
     "http://localhost:5173",
     "http://127.0.0.1:5173",
-]
+] + host_origins + env_origins
 
 # Application definition
 INSTALLED_APPS = [
@@ -97,6 +99,7 @@ REST_FRAMEWORK = {
 REST_AUTH = {
     'USE_JWT': True,
     'JWT_AUTH_HTTPONLY': True,
+    'USER_DETAILS_SERIALIZER': 'news.serializers.UserProfileSerializer',
 }
 
 
