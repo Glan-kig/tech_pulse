@@ -1,6 +1,7 @@
 import os
 import dj_database_url
 from pathlib import Path
+from datetime import timedelta
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -96,9 +97,29 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10,
 }
 
+
+SIMPLE_JWT = {
+    # Durée de validité de l'access token (ex: 1 jour ou 12 heures)
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+    
+    # Durée de validité du refresh token (ex: 7 jours ou 30 jours)
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    
+    # Renouvellement automatique du refresh token lors du rafraîchissement
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'UPDATE_LAST_LOGIN': True,
+
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,
+    'AUTH_HEADER_TYPES': ('Bearer',),
+}
+
+
 REST_AUTH = {
     'USE_JWT': True,
-    'JWT_AUTH_HTTPONLY': True,
+    'JWT_AUTH_HTTPONLY': False,
+    'JWT_AUTH_REFRESH_COOKIE': 'refresh_token',
     'USER_DETAILS_SERIALIZER': 'news.serializers.UserProfileSerializer',
 }
 
@@ -108,7 +129,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:3000",
     "http://localhost:5173",
     "http://127.0.0.1:5173",
-] + env_origins
+] + env_origins + host_origins
 
 ROOT_URLCONF = 'core.urls'
 
