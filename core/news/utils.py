@@ -2,7 +2,6 @@ import os
 import html
 from groq import Groq
 
-client = Groq(api_key=os.getenv('GROQ_API_KEY'))
 
 def generate_ai_summary(text) -> str:
     if not text:
@@ -12,8 +11,13 @@ def generate_ai_summary(text) -> str:
 
     if len(text_clean) < 100:
         return text_clean
+
+    api_key = os.getenv('GROQ_API_KEY')
+    if not api_key:
+        return text_clean[:250] + "..." if len(text_clean) > 250 else text_clean
     
     try:
+        client = Groq(api_key=api_key)
         chat_completion = client.chat.completions.create(
             messages=[
                 {
